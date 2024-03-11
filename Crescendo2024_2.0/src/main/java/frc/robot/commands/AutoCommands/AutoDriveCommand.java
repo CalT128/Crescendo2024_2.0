@@ -2,48 +2,47 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.AutoCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterPosition;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
-public class DeployIntakeCommand extends Command {
-  /** Creates a new DeployIntakeCommand. */
-  IntakeSubsystem m_intake;
-  ShooterSubsystem m_shooter;
+public class AutoDriveCommand extends Command {
+  /** Creates a new AutoDriveCommand. */
+  SwerveSubsystem m_swerve;
+  double xfeet;
+  double yfeet;
+  double rotation;
+  boolean inBetween;
   boolean isFinished;
-  public DeployIntakeCommand(IntakeSubsystem intake,ShooterSubsystem shooter) {
+  public AutoDriveCommand(SwerveSubsystem swerve,double x, double y, double rotation, boolean inBetween) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intake = intake;
-    m_shooter = shooter;
+    m_swerve = swerve;
+    xfeet = x;
+    yfeet = y;
+    this.rotation = rotation;
+    this.inBetween = inBetween;
     isFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setIntakeSequenceFinished(false);
+    m_swerve.setAutoPos();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.deploySolenoidSequence(true);
-    if (m_shooter.getDistanceEncoderTripped()){
-      m_shooter.setFeedMotor(0);
+    m_swerve.autoDrive(xfeet,yfeet,rotation,inBetween);
+    if (m_swerve.getAtAutoSetPoint()){
       isFinished = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_shooter.setFeedMotor(0);
-    m_intake.disableIntake();
-    //m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

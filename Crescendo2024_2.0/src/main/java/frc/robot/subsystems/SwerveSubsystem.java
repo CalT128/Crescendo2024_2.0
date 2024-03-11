@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
+
 
 //import com.ctre.phoenix.sensors.CANCoder;
 
@@ -110,16 +110,25 @@ public class SwerveSubsystem extends SubsystemBase {
   double rotationMult;
   boolean lockedOn;
   double lockedOnRotationalMagnatude;
+  boolean autoAtSetPoint;
+  boolean autoMode;
+  double originDX;
+  double originDY;
+  
   
   
 
   public SwerveSubsystem(){
+    autoMode = false;
+    originDX = 0;
+    originDY = 0;
     
     driveVector = new Vector(0,0);
     strafeMult = 0.7;
     rotationMult = 0.3;
     lockedOn = false;
     lockedOnRotationalMagnatude = 0;
+    autoAtSetPoint = false;
 
     //Change device ID to the normal orientation
     frontLeftDriver = new TalonFX(2,"Drivetrain");
@@ -136,8 +145,8 @@ public class SwerveSubsystem extends SubsystemBase {
     directionCorrector.setTolerance(0.01);
     rotateToDegreeController.enableContinuousInput(0,360);
     rotateToDegreeController.setTolerance(0.002);
-    yDisplacementController = new ProfiledPIDController(0.45,0.03,0.01,new TrapezoidProfile.Constraints(5,1000000000));
-    xDisplacementController = new ProfiledPIDController(0.45,0.03,0.01, new TrapezoidProfile.Constraints(5,1000000000));
+    yDisplacementController = new ProfiledPIDController(0.45,0.03,0.01,new TrapezoidProfile.Constraints(3,1000000000));
+    xDisplacementController = new ProfiledPIDController(0.45,0.03,0.01, new TrapezoidProfile.Constraints(3,1000000000));
     yDisplacementController.setTolerance(0.05);
     xDisplacementController.setTolerance(0.05);
     
@@ -191,12 +200,6 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeftDriver.setPosition(0);
     backRightDriver.setPosition(0);
   }
-
-
-
-  
-
-
   public void drive(double strafeMagnatude1,double strafeDirection1,double rotationalMagnatude1){
     this.strafeMagnatude = strafeMagnatude1; //* strafeMult;
     this.strafeDirection = strafeDirection1 - degreeOffset;
@@ -212,18 +215,26 @@ public class SwerveSubsystem extends SubsystemBase {
       isRotating = false;
       rotationalMagnatude = directionCorrectorValue;
     }
-    if (Math.abs(rotationalMagnatude)>0.5){
-      strafeMagnatude *= 0.5;
-      if (rotationalMagnatude < 0){
-        rotationalMagnatude = -0.5;
+    if (!autoMode){
+      if (Math.abs(rotationalMagnatude)>0.5){
+        strafeMagnatude *= 0.5;
+        if (rotationalMagnatude < 0){
+          rotationalMagnatude = -0.5;
+        }
+        else{
+          rotationalMagnatude = 0.5;
+        }
       }
       else{
-        rotationalMagnatude = 0.5;
+        strafeMagnatude *= Math.abs((1-Math.abs(rotationalMagnatude)));
       }
     }
     else{
-      strafeMagnatude *= Math.abs((1-Math.abs(rotationalMagnatude)));
+      strafeMagnatude *= 0.5;
+      rotationalMagnatude *= 0.5;
     }
+
+    
     driveVector = new Vector(strafeMagnatude,strafeDirection, true);
     //Rotational Vectors
     if (rotationalMagnatude<0){
@@ -244,10 +255,10 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeftVector = backLeftVector.addVector(driveVector);
     backRightVector = backRightVector.addVector(driveVector);
     
-    frontLeftModule.drive(frontLeftVector.getMagnatude(),frontLeftVector.getDegree(),joystickOff,lockedOn);
-    frontRightModule.drive(-frontRightVector.getMagnatude(),frontRightVector.getDegree(),joystickOff,lockedOn);
-    backLeftModule.drive(backLeftVector.getMagnatude(),backLeftVector.getDegree(),joystickOff,lockedOn);
-    backRightModule.drive(backRightVector.getMagnatude(),backRightVector.getDegree(),joystickOff,lockedOn);
+    frontLeftModule.drive(frontLeftVector.getMagnatude(),frontLeftVector.getDegree(),joystickOff,lockedOn,autoMode);
+    frontRightModule.drive(-frontRightVector.getMagnatude(),frontRightVector.getDegree(),joystickOff,lockedOn,autoMode);
+    backLeftModule.drive(backLeftVector.getMagnatude(),backLeftVector.getDegree(),joystickOff,lockedOn,autoMode);
+    backRightModule.drive(backRightVector.getMagnatude(),backRightVector.getDegree(),joystickOff,lockedOn,autoMode);
   }
   public void setLockedOn(boolean lockedOn){
     this.lockedOn = lockedOn;
@@ -258,8 +269,18 @@ public class SwerveSubsystem extends SubsystemBase {
   public void setLockedOnRotationalMagnatude(double rMagnatude){
     lockedOnRotationalMagnatude = rMagnatude;
   }
+  public void setAutoMode(boolean autoMode){
+    this.autoMode = autoMode;
+  }
   public Vector getStrafeVector(){
     return driveVector;
+  }
+  public boolean getAtAutoSetPoint(){
+    return autoAtSetPoint;
+  }
+  public void setAutoPos(){
+    originDX = dx;
+    originDY = dy;
   }
   public void autoDrive(double xfeet,double yfeet,double rotation,boolean inbetweenSetPoint){
     //autoMode = false;
@@ -278,18 +299,18 @@ public class SwerveSubsystem extends SubsystemBase {
     else{
       multiplier = 1;
     }
-    xCalculate = xDisplacementController.calculate(dx,xfeet * multiplier);
-    yCalculate = yDisplacementController.calculate(dy,yfeet * multiplier);
+    xCalculate = xDisplacementController.calculate(dx,(originDX + xfeet) * multiplier);
+    yCalculate = yDisplacementController.calculate(dy,(originDY + yfeet) * multiplier);
     if (((Math.abs(dx-xfeet)-Math.abs(xfeet*multiplier)<=-xfeet+0.5) && (Math.abs(dy-yfeet)-Math.abs(yfeet*multiplier)<=-yfeet + 0.5))  &&(Math.abs(degreeOffset-rotation)<2)){
     //if (xDisplacementController.atSetpoint() && yDisplacementController.atSetpoint()){
-      //autoAtSetPoint = true;
+      autoAtSetPoint = true;
       //System.out.println(true);
 
       //System.out.println(xDisplacementController.getPositionError());
       //System.out.println("Hello");
     }
     else{
-      //autoAtSetPoint = false;
+      autoAtSetPoint = false;
     }
     Vector vector = new Vector(xCalculate,yCalculate);
     double rCalculate = driveToDegree((getDegreeOffset()),rotation);
@@ -390,7 +411,7 @@ public class SwerveSubsystem extends SubsystemBase {
     else{
       instance = true;
     }
-    //if (autoMode){
+    if (autoMode){
       flDifferenceTick = Math.abs(frontLeftDriver.getPosition().getValueAsDouble() - flPreviousTick);
       frDifferenceTick = Math.abs(frontRightDriver.getPosition().getValueAsDouble() - frPreviousTick);
       blDifferenceTick = Math.abs(backLeftDriver.getPosition().getValueAsDouble() - blPreviousTick);
@@ -411,7 +432,7 @@ public class SwerveSubsystem extends SubsystemBase {
       Vector blv = new Vector(blDifferenceTick,(backLeftModule.getGeneralModuleDegree()+degreeOffset)%360,true);
       Vector brv = new Vector(brDifferenceTick,(backRightModule.getGeneralModuleDegree()+degreeOffset) % 360,true);
       odometer.update(flv,flr,blv,brv);
-    //}
+    }
     SmartDashboard.putNumber("DY", odometer.centerY);
     //System.out.println(odometer.getCenterPosition()[0] + ", " + odometer.getCenterPosition()[1]);
     //System.out.println(frontLeftDriver.getPosition());

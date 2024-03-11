@@ -12,9 +12,12 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterPosition;
+
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
+  ShooterSubsystem m_shooter;
   //MOTORS
   CANSparkMax intakeMotor;
   //PNEUMATICS
@@ -32,7 +35,8 @@ public class IntakeSubsystem extends SubsystemBase {
   boolean init;
 
   
-  public IntakeSubsystem() {
+  public IntakeSubsystem(ShooterSubsystem shooter) {
+    m_shooter = shooter;
     //MOTORS
     intakeMotor = new CANSparkMax(9,MotorType.kBrushless);
     //PNEUMATICS
@@ -81,6 +85,7 @@ public class IntakeSubsystem extends SubsystemBase {
       timer.start();
       if (deploy){
         runIntakeMotor(1);
+        m_shooter.setFeedMotor(1);
         solenoidValue = DoubleSolenoid.Value.kForward;
         bottomSolenoid.set(solenoidValue);
         if (timer.get()>0.3){
@@ -89,19 +94,23 @@ public class IntakeSubsystem extends SubsystemBase {
         }
       }
       else {
+        //System.out.println("Hello");
+        //m_shooter.setFeedMotor(0);
         intakeMode = false;
+        m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
         runIntakeMotor(0);
         solenoidValue = DoubleSolenoid.Value.kReverse;
         topSolenoid.set(solenoidValue);
         if (timer.get()>0.8){
           bottomSolenoid.set(solenoidValue);
+          
           intakeSequenceFinished = true;
           disableIntake = false;
         }
       }
     }
     else{
-      intakeMode = false;
+      //intakeMode = false;
       timer.reset();
       timer.stop();
     }
@@ -109,15 +118,18 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_shooter.setIntakeMode(intakeMode);
     if (init){
       topSolenoid.set(DoubleSolenoid.Value.kReverse);
       bottomSolenoid.set(DoubleSolenoid.Value.kReverse);
+      init = false;
     }
     if (disableIntake){
+      //m_shooter.setFeedMotor(0);
       setIntakeSequenceFinished(false);
       deploySolenoidSequence(false);
+      //System.out.println("Hello");
     }
     SmartDashboard.putBoolean("INTAKE MODE:",intakeMode);
-    
   }
 }
