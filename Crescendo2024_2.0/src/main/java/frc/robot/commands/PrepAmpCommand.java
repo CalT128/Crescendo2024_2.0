@@ -33,7 +33,6 @@ public class PrepAmpCommand extends Command {
       isFinished = true;
     }
   }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -52,7 +51,6 @@ public class PrepAmpCommand extends Command {
       m_shooter.setAmpMode(false);
     }
   }
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

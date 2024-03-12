@@ -6,6 +6,7 @@ package frc.robot;
 
 
 import frc.robot.commands.DeployIntakeCommand;
+import frc.robot.commands.DriveCommand;
 import frc.robot.commands.LiftCommand;
 import frc.robot.commands.PrepAmpCommand;
 import frc.robot.commands.PrepClimbCommand;
@@ -14,6 +15,8 @@ import frc.robot.commands.RetractCommand;
 import frc.robot.commands.ShootAmpCommand;
 import frc.robot.commands.ShootSpeakerCommand;
 import frc.robot.commands.ToggleLiftSolenoidCommand;
+import frc.robot.commands.AutoCommands.AutoDriveCommand;
+import frc.robot.commands.AutoPathways.TestPathway;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -42,6 +45,7 @@ public class RobotContainer {
   Joystick driverJoystick;
   Joystick operatorJoystick;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  DriveCommand m_driveCommand;
   DeployIntakeCommand m_deployIntakeCommand;
   PrepSpeakerCommand m_prepSpeakerCommand;
   PrepAmpCommand m_prepAmpCommand;
@@ -51,18 +55,24 @@ public class RobotContainer {
   LiftCommand m_liftCommand;
   RetractCommand m_retractCommand;
   ToggleLiftSolenoidCommand m_toggleLiftSolenoidCommand;
+  //AUTONOMOUS
+  TestPathway m_testPathway;
+  //AUTONOMOUS COMMAND
+  AutoDriveCommand m_autoDriveCommand;
   
   public RobotContainer() {
     ////SUBSYSTEMS////
     m_swerveSubsystem = new SwerveSubsystem();
-    m_intakeSubsystem = new IntakeSubsystem();
-    m_shooterSubsystem = new ShooterSubsystem(m_intakeSubsystem);
+    m_shooterSubsystem = new ShooterSubsystem();
+    m_intakeSubsystem = new IntakeSubsystem(m_shooterSubsystem);
     m_climbSubsystem = new ClimbSubsystem(m_intakeSubsystem, m_shooterSubsystem);
     m_visionSubsystem = new VisionSubsystem(m_swerveSubsystem, m_shooterSubsystem);
     ////CONTROLLERS////
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
     ////COMMANDS////
+
+    m_driveCommand = new DriveCommand(m_swerveSubsystem, driverJoystick);
     m_deployIntakeCommand = new DeployIntakeCommand(m_intakeSubsystem, m_shooterSubsystem);
     m_prepSpeakerCommand = new PrepSpeakerCommand(m_shooterSubsystem, m_visionSubsystem);
     m_prepAmpCommand = new PrepAmpCommand(m_shooterSubsystem);
@@ -72,6 +82,10 @@ public class RobotContainer {
     m_liftCommand = new LiftCommand(m_climbSubsystem);
     m_retractCommand = new RetractCommand(m_climbSubsystem);
     m_toggleLiftSolenoidCommand = new ToggleLiftSolenoidCommand(m_climbSubsystem);
+    //AUTO
+    m_testPathway = new TestPathway(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+    //AUTO COMMANDS
+    //m_autoDriveCommand = new AutoDriveCommand(m_swerveSubsystem, 0, 0, 0, false)
     // Configure the trigger bindings
     configureBindings();
   }
@@ -117,6 +131,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return Autos.exampleAuto(m_exampleSubsystem);
-    return null;
+    return m_testPathway;
+  }
+  public Command getTeleopCommand(){
+    return m_driveCommand;
   }
 }

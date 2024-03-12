@@ -62,7 +62,7 @@ public class SwerveModule {
         currentTick = 0;
         differenceTick = 0;
     }
-    public void drive(double speed, double targetDegree,boolean joystickOff,boolean lockedOn){
+    public void drive(double speed, double targetDegree,boolean joystickOff,boolean lockedOn,boolean autoMode){
         //turnMotor.setNeutralMode(NeutralModeValue.Brake);
         //driveMotor.setNeutralMode(NeutralModeValue.Brake);
         this.speed = speed;
@@ -100,7 +100,7 @@ public class SwerveModule {
                     turnMotor.set(-turnController.calculate(this.absolutePosition,this.targetDegree));
                     driveMotor.set(this.speed);
                 }
-                else if (!lockedOn){
+                else if (!lockedOn && ! autoMode){
                     turnMotor.set(0);
                     driveMotor.set(0);
                 }
@@ -117,7 +117,7 @@ public class SwerveModule {
                     turnMotor.set(-turnController.calculate(this.invertedAbsolutePosition,this.targetDegree));
                     driveMotor.set(-this.speed);
                 }
-                else if (!lockedOn){
+                else if (!lockedOn && !autoMode){
                     turnMotor.set(0);
                     driveMotor.set(0);
                 }

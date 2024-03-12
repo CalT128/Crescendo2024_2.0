@@ -25,7 +25,7 @@ import frc.robot.Constants.ShooterPosition;
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   //OTHER SUBSYSTEMS
-  IntakeSubsystem m_intake;
+  
   //MOTORS
   CANSparkMax topShooterMotor;
   CANSparkMax bottomShooterMotor;
@@ -47,10 +47,11 @@ public class ShooterSubsystem extends SubsystemBase {
   boolean speakerMode;
   boolean ampMode;
   boolean climbMode;
+  boolean intakeMode;
 
-  public ShooterSubsystem(IntakeSubsystem intake) {
+  public ShooterSubsystem() {
     //OTHER SUBSYSTEMS
-    m_intake = intake;
+    
     //MOTORS
     topShooterMotor = new CANSparkMax(10, MotorType.kBrushless);
     topShooterMotor.setInverted(true);
@@ -75,6 +76,10 @@ public class ShooterSubsystem extends SubsystemBase {
     angleController = new ProfiledPIDController(Constants.ShooterConstants.kP,Constants.ShooterConstants.kI,Constants.ShooterConstants. kD, new TrapezoidProfile.Constraints(1.7,999999999));
     angleController.setTolerance(0.001);
     shooterAngleEncoderCalculate = 0;
+    speakerMode = false;
+    ampMode = false;
+    climbMode = false;
+    intakeMode = false;
   }
   public void setSpeakerMode(boolean speakerMode){
     this.speakerMode = speakerMode;
@@ -95,13 +100,17 @@ public class ShooterSubsystem extends SubsystemBase {
     return climbMode;
   }
   public boolean getIntakeMode(){
-    return m_intake.getIntakeMode();
+    return intakeMode;
   }
+  public void setIntakeMode(boolean intakeMode){
+    this.intakeMode = intakeMode;
+  }
+  
   public boolean getDistanceEncoderTripped(){
     return distanceEncoderTripped;
   }
   public void setShooterPosition(ShooterPosition position){
-    if (m_intake.getIntakeMode()){
+    if (intakeMode){
       targetPosition = ShooterPosition.INTAKE;
     }
     else{
@@ -127,14 +136,15 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     currentRotations = shooterAngleEncoder.getPosition()/Constants.ShooterConstants.shooterAngleConstants;
-
-    if (distanceEncoder.getVoltage()>4.8){
+    if (distanceEncoder.getVoltage()>4.7){
       distanceEncoderTripped = true;
     }
     else{
       distanceEncoderTripped = false;
     }
-
+    if (intakeMode){
+      targetPosition = ShooterPosition.INTAKE;
+    }
     shooterAngleMotor.setIdleMode(IdleMode.kBrake);
     if (!(shooterAngleMotor.getOutputCurrent()>40)){
       shooterAngleEncoderCalculate = angleController.calculate(currentRotations,(double)positionsMap.get(targetPosition));
