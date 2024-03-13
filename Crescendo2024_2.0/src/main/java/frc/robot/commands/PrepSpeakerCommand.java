@@ -58,6 +58,7 @@ public class PrepSpeakerCommand extends Command {
       m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
       m_shooter.setShooterMotors(0);
       m_shooter.setSpeakerMode(false);
+      m_vision.setLockedOn(false);
     }
   }
   // Returns true when the command should end.

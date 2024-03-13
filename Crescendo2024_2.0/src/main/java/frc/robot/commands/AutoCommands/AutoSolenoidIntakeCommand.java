@@ -5,23 +5,27 @@
 package frc.robot.commands.AutoCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class SetLauncherPositionCommand extends Command {
-  /** Creates a new SetLauncherPositionCommand. */
-  ShooterSubsystem m_shooter;
-  public SetLauncherPositionCommand(ShooterSubsystem shooter) {
+public class AutoSolenoidIntakeCommand extends Command {
+  /** Creates a new AutoSolenoidIntakeCommand. */
+  IntakeSubsystem m_intake;
+  public AutoSolenoidIntakeCommand(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_shooter = shooter;
+    m_intake = intake;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_intake.setIntakeSequenceFinished(false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_intake.deploySolenoidSequence(true);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

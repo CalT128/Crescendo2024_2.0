@@ -93,6 +93,9 @@ public class VisionSubsystem extends SubsystemBase {
       m_swerve.setLockedOn(false);
     }
   }
+  public void setLockedOn(boolean lockedOn){
+    m_swerve.setLockedOn(lockedOn);
+  }
 
   public void correctLauncher(){
     if(hasTarget){
@@ -123,7 +126,10 @@ public class VisionSubsystem extends SubsystemBase {
     xOffset = tx.getDouble(0.0);
     yOffset = ty.getDouble(0.0);
     hasTarget = (tv.getDouble(0.0) == 1);
-    targetDistance = distanceToTarget(yOffset); 
+    targetDistance = distanceToTarget(yOffset);
+    /*if (autoAlign){
+
+    } */
 
     if(Math.abs(xOffset) >= VisionConstants.X_ALIGNMENT_RANGE)
       isAligned = false;

@@ -27,6 +27,14 @@ public class TestPathway extends SequentialCommandGroup {
     m_shooter = shooter;
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
-      new AutoDriveCommand(m_swerve,0,3,180,false));
+      new AutoDriveCommand(m_swerve,0,0,40,false),
+      new AutoDriveCommand(m_swerve,0,2.4,0,false),
+      new AutoDriveCommand(m_swerve,0,0,30,false),
+      new AutoDriveCommand(m_swerve,3.5,-2,0,false),
+      new AutoDriveCommand(m_swerve,1,2,0,false),
+      new AutoDriveCommand(m_swerve,4,-2,330,false)
+      );
+
   }
 }
+

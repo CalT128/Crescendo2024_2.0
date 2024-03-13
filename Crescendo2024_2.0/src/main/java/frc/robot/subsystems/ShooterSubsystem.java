@@ -136,12 +136,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     currentRotations = shooterAngleEncoder.getPosition()/Constants.ShooterConstants.shooterAngleConstants;
-    if (distanceEncoder.getVoltage()>4.7){
+    if (distanceEncoder.getVoltage()>4){
       distanceEncoderTripped = true;
     }
     else{
       distanceEncoderTripped = false;
     }
+    //System.out.println(distanceEncoderTripped);
     if (intakeMode){
       targetPosition = ShooterPosition.INTAKE;
     }

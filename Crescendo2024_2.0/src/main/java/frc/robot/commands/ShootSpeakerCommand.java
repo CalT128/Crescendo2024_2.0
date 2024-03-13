@@ -39,6 +39,7 @@ public class ShootSpeakerCommand extends Command {
     if (m_shooter.getSpeakerMode()){
       m_shooter.setFeedMotor(0);
     }
+    
   }
 
   // Returns true when the command should end.

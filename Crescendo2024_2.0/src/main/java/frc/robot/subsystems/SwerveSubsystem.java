@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 
 
 
+import org.photonvision.PhotonCamera;
+
 //import com.ctre.phoenix.sensors.CANCoder;
 
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -114,11 +116,17 @@ public class SwerveSubsystem extends SubsystemBase {
   boolean autoMode;
   double originDX;
   double originDY;
+  PhotonCamera m;
+  double xCalculate;
+  double yCalculate;
   
   
   
 
   public SwerveSubsystem(){
+    xCalculate = 0;
+    yCalculate = 0;
+    
     autoMode = false;
     originDX = 0;
     originDY = 0;
@@ -145,8 +153,8 @@ public class SwerveSubsystem extends SubsystemBase {
     directionCorrector.setTolerance(0.01);
     rotateToDegreeController.enableContinuousInput(0,360);
     rotateToDegreeController.setTolerance(0.002);
-    yDisplacementController = new ProfiledPIDController(0.45,0.03,0.01,new TrapezoidProfile.Constraints(3,1000000000));
-    xDisplacementController = new ProfiledPIDController(0.45,0.03,0.01, new TrapezoidProfile.Constraints(3,1000000000));
+    yDisplacementController = new ProfiledPIDController(1.3,0.07,0.03,new TrapezoidProfile.Constraints(3,5));
+    xDisplacementController = new ProfiledPIDController(1.3,0.07,0.03, new TrapezoidProfile.Constraints(3,5));
     yDisplacementController.setTolerance(0.05);
     xDisplacementController.setTolerance(0.05);
     
@@ -231,7 +239,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     else{
       strafeMagnatude *= 0.5;
-      rotationalMagnatude *= 0.5;
+      rotationalMagnatude *= 0.44;
     }
 
     
@@ -275,6 +283,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public Vector getStrafeVector(){
     return driveVector;
   }
+  public void setAutoAtSetPoint(boolean atAutoAtSetPoint){
+    this.autoAtSetPoint = atAutoAtSetPoint;
+  }
   public boolean getAtAutoSetPoint(){
     return autoAtSetPoint;
   }
@@ -290,8 +301,7 @@ public class SwerveSubsystem extends SubsystemBase {
     //System.out.println(dx);
     dy = odometer.getCenterPosition()[1];
     //System.out.println(dy);
-    double xCalculate;
-    double yCalculate;
+    
     double multiplier;
     if (inbetweenSetPoint){
       multiplier = 1000;
@@ -299,13 +309,19 @@ public class SwerveSubsystem extends SubsystemBase {
     else{
       multiplier = 1;
     }
-    xCalculate = xDisplacementController.calculate(dx,(originDX + xfeet) * multiplier);
-    yCalculate = yDisplacementController.calculate(dy,(originDY + yfeet) * multiplier);
-    if (((Math.abs(dx-xfeet)-Math.abs(xfeet*multiplier)<=-xfeet+0.5) && (Math.abs(dy-yfeet)-Math.abs(yfeet*multiplier)<=-yfeet + 0.5))  &&(Math.abs(degreeOffset-rotation)<2)){
+    xfeet = originDX + xfeet;
+    yfeet = originDY + yfeet;
+    xCalculate = xDisplacementController.calculate(dx,(xfeet) * multiplier);
+    yCalculate = yDisplacementController.calculate(dy,(yfeet) * multiplier);
+    if (((Math.abs(xfeet-dx))-Math.abs(xfeet*multiplier)<=-Math.abs(xfeet * multiplier) + 0.3) && (Math.abs(yfeet-dy)-Math.abs(yfeet*multiplier)<=-Math.abs(yfeet * multiplier) + 0.3)  &&(Math.abs(degreeOffset-rotation)<2.3)){
     //if (xDisplacementController.atSetpoint() && yDisplacementController.atSetpoint()){
+      //drive(0,0,0);
+      
+      
+      System.out.println("AutoDriveFinished");
       autoAtSetPoint = true;
-      //System.out.println(true);
-
+      //drive(0,0,0);
+      stopDriving();
       //System.out.println(xDisplacementController.getPositionError());
       //System.out.println("Hello");
     }
@@ -314,8 +330,16 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     Vector vector = new Vector(xCalculate,yCalculate);
     double rCalculate = driveToDegree((getDegreeOffset()),rotation);
-    drive(vector.getMagnatude(),vector.getDegree(),rCalculate);
+    if (!autoAtSetPoint){
+      drive(vector.getMagnatude(),vector.getDegree(),rCalculate);
+    }
+    else{
+      stopDriving();
+      //drive(0,0,0);
+    }
+    
   }
+  
   public double getAbsoluteRotation(){
     //return pigeon.getAbsoluteCompassHeading();//WHCH WAY DOES IT ROTATE
     return pigeon.getAngle();
@@ -432,8 +456,14 @@ public class SwerveSubsystem extends SubsystemBase {
       Vector blv = new Vector(blDifferenceTick,(backLeftModule.getGeneralModuleDegree()+degreeOffset)%360,true);
       Vector brv = new Vector(brDifferenceTick,(backRightModule.getGeneralModuleDegree()+degreeOffset) % 360,true);
       odometer.update(flv,flr,blv,brv);
+      //System.out.println(odometer.centerX + ", " + odometer.centerY);
     }
     SmartDashboard.putNumber("DY", odometer.centerY);
+    SmartDashboard.putNumber("DX",odometer.centerX);
+    SmartDashboard.putNumber("Degree", degreeOffset);
+    SmartDashboard.putNumber("CalculateX", xCalculate);
+    SmartDashboard.putNumber("CalculateY",yCalculate);
+
     //System.out.println(odometer.getCenterPosition()[0] + ", " + odometer.getCenterPosition()[1]);
     //System.out.println(frontLeftDriver.getPosition());
     

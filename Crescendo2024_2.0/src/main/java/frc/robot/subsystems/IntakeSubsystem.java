@@ -18,6 +18,7 @@ import frc.robot.Constants.ShooterPosition;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
+  
   ShooterSubsystem m_shooter;
   //MOTORS
   CANSparkMax intakeMotor;
@@ -36,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
   boolean init;
 
   
-  public IntakeSubsystem(ShooterSubsystem shooter) {
+  public IntakeSubsystem(SwerveSubsystem swerve,ShooterSubsystem shooter) {
     m_shooter = shooter;
     //MOTORS
     intakeMotor = new CANSparkMax(9,MotorType.kBrushless);
@@ -82,7 +83,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void deploySolenoidSequence(boolean deploy){
     DoubleSolenoid.Value solenoidValue;
     if (!intakeSequenceFinished){
-      intakeMode = true;
+      
+      //if (!m_swerve.getAutoMode()){
+        intakeMode = true;
+      //};
       timer.start();
       if (deploy){
         runIntakeMotor(1);
@@ -91,10 +95,12 @@ public class IntakeSubsystem extends SubsystemBase {
         bottomSolenoid.set(solenoidValue);
         if (timer.get()>0.3){
           topSolenoid.set(solenoidValue);
+
           intakeSequenceFinished = true;
         }
       }
       else {
+        
         //System.out.println("Hello");
         //m_shooter.setFeedMotor(0);
         intakeMode = false;
@@ -106,15 +112,20 @@ public class IntakeSubsystem extends SubsystemBase {
           bottomSolenoid.set(solenoidValue);
           
           intakeSequenceFinished = true;
+          timer.reset();
+          timer.stop();
           disableIntake = false;
         }
       }
+      //System.out.println("HELLO");
     }
     else{
       //intakeMode = false;
+      //System.out.println("hello");
       timer.reset();
       timer.stop();
     }
+    
   }
   @Override
   public void periodic() {

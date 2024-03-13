@@ -4,39 +4,31 @@
 
 package frc.robot.commands.AutoCommands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveSubsystem;
 
-public class AutoDriveCommand extends Command {
-  /** Creates a new AutoDriveCommand. */
-  SwerveSubsystem m_swerve;
-  double xfeet;
-  double yfeet;
-  double rotation;
-  boolean inBetween;
+public class TimerCommand extends Command {
+  /** Creates a new TimerCommand. */
+  Timer timer;
+  double time;
   boolean isFinished;
-  public AutoDriveCommand(SwerveSubsystem swerve,double x, double y, double rotation, boolean inBetween) {
+  
+  public TimerCommand(double time) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_swerve = swerve;
-    xfeet = x;
-    yfeet = y;
-    this.rotation = rotation;
-    this.inBetween = inBetween;
+    this.time = time;
     isFinished = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_swerve.setAutoPos();
-    m_swerve.setAutoAtSetPoint(false);
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerve.autoDrive(xfeet,yfeet,rotation,inBetween);
-    if (m_swerve.getAtAutoSetPoint()){
+    if (timer.get()>time){
       isFinished = true;
     }
   }
