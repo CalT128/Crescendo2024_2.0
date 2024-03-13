@@ -19,6 +19,7 @@ import frc.robot.commands.AutoCommands.AutoDriveCommand;
 import frc.robot.commands.AutoPathways.TestPathway;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -40,7 +41,7 @@ public class RobotContainer {
   IntakeSubsystem m_intakeSubsystem;
   ShooterSubsystem m_shooterSubsystem;
   ClimbSubsystem m_climbSubsystem;
-  VisionSubsystem m_visionSubsystem;
+  PhotonVisionSubsystem m_photonVisionSubsystem;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   Joystick driverJoystick;
   Joystick operatorJoystick;
@@ -64,9 +65,10 @@ public class RobotContainer {
     ////SUBSYSTEMS////
     m_swerveSubsystem = new SwerveSubsystem();
     m_shooterSubsystem = new ShooterSubsystem();
-    m_intakeSubsystem = new IntakeSubsystem(m_shooterSubsystem);
+    m_intakeSubsystem = new IntakeSubsystem(m_swerveSubsystem,m_shooterSubsystem);
     m_climbSubsystem = new ClimbSubsystem(m_intakeSubsystem, m_shooterSubsystem);
-    m_visionSubsystem = new VisionSubsystem(m_swerveSubsystem, m_shooterSubsystem);
+    m_photonVisionSubsystem = new PhotonVisionSubsystem(m_swerveSubsystem, m_shooterSubsystem);
+
     ////CONTROLLERS////
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
@@ -74,7 +76,7 @@ public class RobotContainer {
 
     m_driveCommand = new DriveCommand(m_swerveSubsystem, driverJoystick);
     m_deployIntakeCommand = new DeployIntakeCommand(m_intakeSubsystem, m_shooterSubsystem);
-    m_prepSpeakerCommand = new PrepSpeakerCommand(m_shooterSubsystem, m_visionSubsystem);
+    m_prepSpeakerCommand = new PrepSpeakerCommand(m_shooterSubsystem, m_photonVisionSubsystem);
     m_prepAmpCommand = new PrepAmpCommand(m_shooterSubsystem);
     m_prepClimbCommand = new PrepClimbCommand(m_shooterSubsystem);
     m_shootSpeakerCommand = new ShootSpeakerCommand(m_shooterSubsystem);
@@ -83,7 +85,7 @@ public class RobotContainer {
     m_retractCommand = new RetractCommand(m_climbSubsystem);
     m_toggleLiftSolenoidCommand = new ToggleLiftSolenoidCommand(m_climbSubsystem);
     //AUTO
-    m_testPathway = new TestPathway(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+    m_testPathway = new TestPathway(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem,m_photonVisionSubsystem);
     //AUTO COMMANDS
     //m_autoDriveCommand = new AutoDriveCommand(m_swerveSubsystem, 0, 0, 0, false)
     // Configure the trigger bindings

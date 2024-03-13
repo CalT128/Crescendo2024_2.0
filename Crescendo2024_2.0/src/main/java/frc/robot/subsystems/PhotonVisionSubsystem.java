@@ -34,12 +34,16 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   ShooterSubsystem m_shooter;
 
   public PhotonVisionSubsystem(SwerveSubsystem swerve, ShooterSubsystem shooter) {
-    camera = new PhotonCamera("photonvision");
-
+    camera = new PhotonCamera("photonVisionCamera");
+    
     isAligned = false;
 
     m_swerve = swerve;
     m_shooter = shooter;
+    
+  }
+  public void setLockedOn(boolean lockedOn){
+    m_swerve.setLockedOn(lockedOn);
   }
 
   public double distanceToTarget(double degrees){
@@ -84,10 +88,19 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println(camera.isConnected());
+    frame = camera.getLatestResult();
     hasTarget = frame.hasTargets();
     value = frame.getBestTarget();
-    xOffset = value.getYaw();
-    yOffset = value.getPitch();
+
+    if(value == null){
+      xOffset = 0;
+      yOffset = 0;
+    }
+    else{
+      xOffset = value.getYaw();
+      yOffset = value.getPitch();
+    }
 
     if(Math.abs(xOffset) >= VisionConstants.X_ALIGNMENT_RANGE)
       isAligned = false;

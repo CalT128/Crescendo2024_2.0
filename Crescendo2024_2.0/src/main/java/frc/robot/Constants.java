@@ -17,9 +17,9 @@ public final class Constants {
     public static final double kP = 0.0037;
     public static final double kI = 0.00001;
     public static final double kD = 0.0;
-    public static final double rKP = 0.011;
+    public static final double rKP = 0.01;
     public static final double rKI = 0.001;
-    public static final double rKD = 0.001;
+    public static final double rKD = 0.002;
     public static final double frontLeftSensor = 272.4;
     public static final double frontRightSensor = 159.5;
     public static final double backLeftSensor = 16.4;

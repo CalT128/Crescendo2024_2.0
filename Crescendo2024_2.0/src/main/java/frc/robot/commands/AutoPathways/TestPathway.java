@@ -6,8 +6,11 @@ package frc.robot.commands.AutoPathways;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.AutoDriveCommand;
+import frc.robot.commands.AutoCommands.AutoRunFeedCommand;
+import frc.robot.commands.AutoCommands.AutoSpeakerAlignCommand;
 import frc.robot.commands.AutoCommands.SetAutoModeCommand;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -19,7 +22,8 @@ public class TestPathway extends SequentialCommandGroup {
   SwerveSubsystem m_swerve;
   IntakeSubsystem m_intake;
   ShooterSubsystem m_shooter;
-  public TestPathway(SwerveSubsystem swerve, IntakeSubsystem intake, ShooterSubsystem shooter) {
+  PhotonVisionSubsystem m_vision;
+  public TestPathway(SwerveSubsystem swerve, IntakeSubsystem intake, ShooterSubsystem shooter,PhotonVisionSubsystem vision) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     m_swerve = swerve;
@@ -28,11 +32,13 @@ public class TestPathway extends SequentialCommandGroup {
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
       new AutoDriveCommand(m_swerve,0,0,40,false),
-      new AutoDriveCommand(m_swerve,0,2.4,0,false),
+      new AutoSpeakerAlignCommand(shooter, m_vision),
+      new AutoRunFeedCommand(shooter)
+      /*new AutoDriveCommand(m_swerve,0,2.4,0,false),
       new AutoDriveCommand(m_swerve,0,0,30,false),
       new AutoDriveCommand(m_swerve,3.5,-2,0,false),
       new AutoDriveCommand(m_swerve,1,2,0,false),
-      new AutoDriveCommand(m_swerve,4,-2,330,false)
+      new AutoDriveCommand(m_swerve,4,-2,330,false)*/
       );
 
   }

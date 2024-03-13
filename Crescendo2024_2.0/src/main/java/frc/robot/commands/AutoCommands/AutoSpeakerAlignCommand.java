@@ -2,66 +2,57 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.AutoCommands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterPosition;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
-public class PrepSpeakerCommand extends Command {
-  /** Creates a new PrepSpeakerCommand. */
+public class AutoSpeakerAlignCommand extends Command {
+  /** Creates a new AutoSpeakerAlignCommand. */
   ShooterSubsystem m_shooter;
   PhotonVisionSubsystem m_vision;
+  Timer timer;
   boolean isFinished;
-  boolean conflict;
-
-  public PrepSpeakerCommand(ShooterSubsystem shooter,PhotonVisionSubsystem vision) {
+  public AutoSpeakerAlignCommand(ShooterSubsystem shooter, PhotonVisionSubsystem vision) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_shooter = shooter;
     m_vision = vision;
+    timer = new Timer();
     isFinished = false;
-    conflict = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    conflict = m_shooter.getAmpMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
-    if (!conflict){
-      m_shooter.setSpeakerMode(true);
-      m_shooter.setShooterPosition(ShooterPosition.SPEAKER);
-      m_shooter.setShooterMotors(0.9);
-    }
-    else{
-      isFinished = true;
-    }
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    conflict = m_shooter.getAmpMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
-    if (!conflict){
+    if(timer.get()<1){
+      m_shooter.setShooterPosition(ShooterPosition.SPEAKER);
       m_vision.ameliorateX();
       m_vision.correctLauncher();
     }
     else{
+      timer.reset();
+      timer.stop();
       isFinished = true;
     }
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!conflict){
-      m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
-      m_shooter.setShooterMotors(0);
-      m_shooter.setSpeakerMode(false);
-      m_vision.setLockedOn(false);
-    }
+    m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
+    m_vision.setLockedOn(false);
   }
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
