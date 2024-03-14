@@ -121,8 +121,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //System.out.println(m_swerve.getIntakeMode());
-    //System.out.println(m_swerve.getIntakeMode());
     xOffset = tx.getDouble(0.0);
     yOffset = ty.getDouble(0.0);
     hasTarget = (tv.getDouble(0.0) == 1);
@@ -130,7 +128,6 @@ public class VisionSubsystem extends SubsystemBase {
     /*if (autoAlign){
 
     } */
-
     if(Math.abs(xOffset) >= VisionConstants.X_ALIGNMENT_RANGE)
       isAligned = false;
     else

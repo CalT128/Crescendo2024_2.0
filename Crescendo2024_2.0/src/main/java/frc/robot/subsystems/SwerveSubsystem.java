@@ -280,6 +280,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public void setAutoMode(boolean autoMode){
     this.autoMode = autoMode;
   }
+  public boolean getAutoMode(){
+    return autoMode;
+  }
   public Vector getStrafeVector(){
     return driveVector;
   }
@@ -407,6 +410,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   public double getYDisplacement(){
     return yDisplacement;
+  }
+  public void resetOnce(){
+    once = true;
   }
   @Override
   public void periodic() {

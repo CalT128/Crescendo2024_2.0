@@ -25,7 +25,7 @@ import frc.robot.Constants.ShooterPosition;
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   //OTHER SUBSYSTEMS
-  
+  SwerveSubsystem m_swerve;
   //MOTORS
   CANSparkMax topShooterMotor;
   CANSparkMax bottomShooterMotor;
@@ -49,9 +49,9 @@ public class ShooterSubsystem extends SubsystemBase {
   boolean climbMode;
   boolean intakeMode;
 
-  public ShooterSubsystem() {
+  public ShooterSubsystem(SwerveSubsystem swerve) {
     //OTHER SUBSYSTEMS
-    
+    m_swerve = swerve;
     //MOTORS
     topShooterMotor = new CANSparkMax(10, MotorType.kBrushless);
     topShooterMotor.setInverted(true);
@@ -143,7 +143,7 @@ public class ShooterSubsystem extends SubsystemBase {
       distanceEncoderTripped = false;
     }
     //System.out.println(distanceEncoderTripped);
-    if (intakeMode){
+    if (intakeMode && !m_swerve.getAutoMode()){
       targetPosition = ShooterPosition.INTAKE;
     }
     shooterAngleMotor.setIdleMode(IdleMode.kBrake);
@@ -154,7 +154,6 @@ public class ShooterSubsystem extends SubsystemBase {
     else{
       shooterAngleMotor.set(0);
     }
-
     SmartDashboard.putBoolean("SPEAKER MODE",speakerMode);
     SmartDashboard.putBoolean("AMP MODE",ampMode);
     SmartDashboard.putBoolean("CLIMB MODE", climbMode); 

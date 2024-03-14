@@ -7,11 +7,11 @@ package frc.robot.commands.AutoCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class AutointakeCommand extends Command {
+public class AutoIntakeCommand extends Command {
   /** Creates a new AutointakeCommand. */
   IntakeSubsystem m_intake;
   boolean isFinished;
-  public AutointakeCommand(IntakeSubsystem intake) {
+  public AutoIntakeCommand(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
     isFinished = false;
@@ -21,6 +21,7 @@ public class AutointakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    
     m_intake.setIntakeSequenceFinished(false);
     m_intake.deploySolenoidSequence(true);
   }

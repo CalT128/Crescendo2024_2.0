@@ -39,8 +39,7 @@ public class TestPathway extends SequentialCommandGroup {
       new AutoDriveCommand(m_swerve,3.5,-2,0,false),
       new AutoDriveCommand(m_swerve,1,2,0,false),
       new AutoDriveCommand(m_swerve,4,-2,330,false)*/
-      );
-
+    );
   }
 }
 

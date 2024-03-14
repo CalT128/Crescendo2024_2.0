@@ -18,7 +18,7 @@ import frc.robot.Constants.ShooterPosition;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
-  
+  SwerveSubsystem m_swerve;
   ShooterSubsystem m_shooter;
   //MOTORS
   CANSparkMax intakeMotor;
@@ -33,11 +33,13 @@ public class IntakeSubsystem extends SubsystemBase {
   boolean intakeSequenceFinished;
   boolean intakeMode;
   boolean disableIntake;
+  boolean autoIntakeMode;
   //starting positions
   boolean init;
 
   
   public IntakeSubsystem(SwerveSubsystem swerve,ShooterSubsystem shooter) {
+    m_swerve = swerve;
     m_shooter = shooter;
     //MOTORS
     intakeMotor = new CANSparkMax(9,MotorType.kBrushless);
@@ -80,13 +82,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeSequenceFinished(boolean isFinished){
     intakeSequenceFinished = isFinished;
   }
+  public  boolean getIntakeSequenceFinished(){
+    return intakeSequenceFinished;
+  }
   public void deploySolenoidSequence(boolean deploy){
     DoubleSolenoid.Value solenoidValue;
     if (!intakeSequenceFinished){
       
-      //if (!m_swerve.getAutoMode()){
+      if (!m_swerve.getAutoMode()){
         intakeMode = true;
-      //};
+        
+      }
       timer.start();
       if (deploy){
         runIntakeMotor(1);
@@ -127,9 +133,23 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     
   }
+  public void setAutoIntakeMode(boolean autoIntake){
+    this.autoIntakeMode = autoIntake;
+  }
+  public boolean getAutoIntakeMode(){
+    return autoIntakeMode;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (autoIntakeMode){
+      m_shooter.setShooterPosition(ShooterPosition.INTAKE);
+      if (m_shooter.getDistanceEncoderTripped()){
+        m_shooter.setFeedMotor(0);
+        m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
+        autoIntakeMode = false;
+      }
+    }
     m_shooter.setIntakeMode(intakeMode);
     if (init){
       topSolenoid.set(DoubleSolenoid.Value.kReverse);
