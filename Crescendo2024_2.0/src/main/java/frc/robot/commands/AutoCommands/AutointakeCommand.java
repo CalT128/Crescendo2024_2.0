@@ -11,10 +11,12 @@ public class AutoIntakeCommand extends Command {
   /** Creates a new AutointakeCommand. */
   IntakeSubsystem m_intake;
   boolean isFinished;
-  public AutoIntakeCommand(IntakeSubsystem intake) {
+  boolean deploy;
+  public AutoIntakeCommand(IntakeSubsystem intake,boolean deploy) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
     isFinished = false;
+    this.deploy = deploy;
   }
 
   

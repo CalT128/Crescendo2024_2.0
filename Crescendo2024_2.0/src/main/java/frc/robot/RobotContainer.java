@@ -16,6 +16,12 @@ import frc.robot.commands.ShootAmpCommand;
 import frc.robot.commands.ShootSpeakerCommand;
 import frc.robot.commands.ToggleLiftSolenoidCommand;
 import frc.robot.commands.AutoCommands.AutoDriveCommand;
+import frc.robot.commands.AutoPathways.RedL;
+import frc.robot.commands.AutoPathways.RedL1N;
+import frc.robot.commands.AutoPathways.RedM;
+import frc.robot.commands.AutoPathways.RedM2N;
+import frc.robot.commands.AutoPathways.RedR;
+import frc.robot.commands.AutoPathways.RedR3N;
 import frc.robot.commands.AutoPathways.TestPathway;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -24,6 +30,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -58,13 +65,20 @@ public class RobotContainer {
   ToggleLiftSolenoidCommand m_toggleLiftSolenoidCommand;
   //AUTONOMOUS
   TestPathway m_testPathway;
+  RedL m_redL;
+  RedL1N m_redL1N;
+  RedM m_redM;
+  RedM2N m_redM2N;
+  RedR m_redR;
+  RedR3N m_redR3N;
   //AUTONOMOUS COMMAND
   AutoDriveCommand m_autoDriveCommand;
+  SendableChooser<Command> m_chooser;
   
   public RobotContainer() {
     ////SUBSYSTEMS////
     m_swerveSubsystem = new SwerveSubsystem();
-    m_shooterSubsystem = new ShooterSubsystem();
+    m_shooterSubsystem = new ShooterSubsystem(m_swerveSubsystem);
     m_intakeSubsystem = new IntakeSubsystem(m_swerveSubsystem,m_shooterSubsystem);
     m_climbSubsystem = new ClimbSubsystem(m_intakeSubsystem, m_shooterSubsystem);
     m_photonVisionSubsystem = new PhotonVisionSubsystem(m_swerveSubsystem, m_shooterSubsystem);
@@ -86,9 +100,24 @@ public class RobotContainer {
     m_toggleLiftSolenoidCommand = new ToggleLiftSolenoidCommand(m_climbSubsystem);
     //AUTO
     m_testPathway = new TestPathway(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem,m_photonVisionSubsystem);
+    m_redL = new RedL(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_redL1N = new RedL1N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_redM = new RedM(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_redM2N = new RedM2N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_redR = new RedR(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_redR3N = new RedR3N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+
     //AUTO COMMANDS
     //m_autoDriveCommand = new AutoDriveCommand(m_swerveSubsystem, 0, 0, 0, false)
     // Configure the trigger bindings
+    m_chooser = new SendableChooser<>();
+    m_chooser.setDefaultOption("RedL",m_redL);
+    m_chooser.addOption("RedL1N",m_redL1N);
+    m_chooser.addOption("RedM",m_redM);
+    m_chooser.addOption("RedM2N",m_redM2N);
+    m_chooser.addOption("RedR", m_redR);
+    m_chooser.addOption("RedR3N", m_redR3N);
+    m_chooser.addOption("TEST",m_testPathway);
     configureBindings();
   }
 

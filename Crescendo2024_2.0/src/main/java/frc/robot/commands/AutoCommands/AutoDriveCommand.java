@@ -28,6 +28,7 @@ public class AutoDriveCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    
     m_swerve.setAutoPos();
     m_swerve.setAutoAtSetPoint(false);
   }
