@@ -17,30 +17,20 @@ import frc.robot.subsystems.SwerveSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TestPathway extends SequentialCommandGroup {
-  /** Creates a new TestPathway. */
-  SwerveSubsystem m_swerve;
-  IntakeSubsystem m_intake;
-  ShooterSubsystem m_shooter;
-  PhotonVisionSubsystem m_vision;
-  public TestPathway(SwerveSubsystem swerve, IntakeSubsystem intake, ShooterSubsystem shooter,PhotonVisionSubsystem vision) {
+public class RedR extends SequentialCommandGroup {
+  /** Creates a new RedR. */
+  public RedR(SwerveSubsystem m_swerve,IntakeSubsystem m_intake, ShooterSubsystem m_shooter, PhotonVisionSubsystem m_vision) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    m_swerve = swerve;
-    m_intake = intake;
-    m_shooter = shooter;
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
-      new AutoDriveCommand(m_swerve,0,0,40,false),
-      new AutoSpeakerAlignCommand(shooter, m_vision,true),
-      new AutoRunFeedCommand(shooter)
-      /*new AutoDriveCommand(m_swerve,0,2.4,0,false),
-      new AutoDriveCommand(m_swerve,0,0,30,false),
-      new AutoDriveCommand(m_swerve,3.5,-2,0,false),
-      new AutoDriveCommand(m_swerve,1,2,0,false),
-      new AutoDriveCommand(m_swerve,4,-2,330,false)*/
-      );
-
+      new AutoDriveCommand(m_swerve,0,0,320,false),
+      new AutoSpeakerAlignCommand(m_shooter,m_vision,true),
+      new AutoRunFeedCommand(m_shooter),
+      new AutoSpeakerAlignCommand(m_shooter,m_vision,false),
+      new AutoDriveCommand(m_swerve,0,0,0,false),
+      new SetAutoModeCommand(m_swerve,false)
+      
+    );
   }
 }
-

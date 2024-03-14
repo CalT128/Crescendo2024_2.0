@@ -16,41 +16,44 @@ public class AutoSpeakerAlignCommand extends Command {
   PhotonVisionSubsystem m_vision;
   Timer timer;
   boolean isFinished;
-  public AutoSpeakerAlignCommand(ShooterSubsystem shooter, PhotonVisionSubsystem vision) {
+  boolean align;
+  public AutoSpeakerAlignCommand(ShooterSubsystem shooter, PhotonVisionSubsystem vision,boolean align) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_shooter = shooter;
     m_vision = vision;
     timer = new Timer();
     isFinished = false;
+    this.align = align;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_vision.setAutoAlign(align);
     timer.start();
+    if (align){
+      isFinished = true;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(timer.get()<1){
-      m_shooter.setShooterPosition(ShooterPosition.SPEAKER);
-      m_vision.ameliorateX();
-      m_vision.correctLauncher();
-    }
-    else{
-      timer.reset();
-      timer.stop();
+    if (timer.get()>0.7){
       isFinished = true;
     }
-    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
-    m_vision.setLockedOn(false);
+    if (!align){
+      m_vision.setLockedOn(false);
+      m_vision.setAutoAlign(false);
+      m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
+      
+    }
+    
   }
 
   // Returns true when the command should end.

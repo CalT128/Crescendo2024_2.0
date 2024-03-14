@@ -27,6 +27,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   boolean hasTarget;
   boolean isAligned;
+  boolean autoAlign;
 
   double targetDistance;
 
@@ -35,7 +36,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public PhotonVisionSubsystem(SwerveSubsystem swerve, ShooterSubsystem shooter) {
     camera = new PhotonCamera("photonVisionCamera");
-    
+    autoAlign = false;
     isAligned = false;
 
     m_swerve = swerve;
@@ -85,10 +86,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_shooter.setSpeakerPosition(Constants.ShooterConstants.shooterSpeakerPosition);
     }
   }
+  public void setAutoAlign(boolean autoAlign){
+    this.autoAlign = autoAlign;
+  }
 
   @Override
   public void periodic() {
-    System.out.println(camera.isConnected());
+    //System.out.println(camera.isConnected());
     frame = camera.getLatestResult();
     hasTarget = frame.hasTargets();
     value = frame.getBestTarget();
