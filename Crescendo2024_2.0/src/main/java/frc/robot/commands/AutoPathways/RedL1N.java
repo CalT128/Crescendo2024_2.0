@@ -32,7 +32,7 @@ public class RedL1N extends SequentialCommandGroup {
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,false),
       new SetAutoIntakeModeCommand(m_intake,m_shooter,true),
-      new AutoIntakeCommand(m_intake),
+      new AutoIntakeCommand(m_intake,true),
       new AutoDriveCommand(m_swerve,0,3,0,false),
       new TimerCommand(2),
       new SetAutoIntakeModeCommand(m_intake,m_shooter,false),
@@ -41,6 +41,7 @@ public class RedL1N extends SequentialCommandGroup {
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_shooter, m_vision, false),
       new AutoDriveCommand(m_swerve,0,0,0,false),
+      new AutoIntakeCommand(m_intake,false),
       new SetAutoModeCommand(m_swerve,false)
     );
   }

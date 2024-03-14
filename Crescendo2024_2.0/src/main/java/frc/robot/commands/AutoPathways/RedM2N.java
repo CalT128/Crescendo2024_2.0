@@ -31,13 +31,14 @@ public class RedM2N extends SequentialCommandGroup {
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,false),
       new SetAutoIntakeModeCommand(m_intake,m_shooter,true),
-      new AutoIntakeCommand(m_intake),
+      new AutoIntakeCommand(m_intake,true),
       new AutoDriveCommand(m_swerve,0,3,0,false),
       new TimerCommand(2),
       new SetAutoIntakeModeCommand(m_intake,m_shooter,false),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,false),
+      new AutoIntakeCommand(m_intake,false),
       new SetAutoModeCommand(m_swerve,false)
       
     );
