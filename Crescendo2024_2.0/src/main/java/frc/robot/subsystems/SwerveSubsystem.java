@@ -480,11 +480,5 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("CalculateX", xCalculate);
     SmartDashboard.putNumber("CalculateY",yCalculate);
 
-    //System.out.println(odometer.getCenterPosition()[0] + ", " + odometer.getCenterPosition()[1]);
-    //System.out.println(frontLeftDriver.getPosition());
-    
-
-
-    //System.out.println(Math.abs(frontLeftDriver.getPosition().getValueAsDouble()/ SwerveDriveConstants.ticksPerRotation * SwerveDriveConstants.feetPerRotation));
   }
 }

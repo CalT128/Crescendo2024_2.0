@@ -18,8 +18,6 @@ public class AutoIntakeCommand extends Command {
     isFinished = false;
     this.deploy = deploy;
   }
-
-  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
