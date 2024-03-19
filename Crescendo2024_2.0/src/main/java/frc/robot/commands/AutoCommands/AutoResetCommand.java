@@ -32,5 +32,7 @@ public class AutoResetCommand extends InstantCommand {
     m_swerve.setAutoMode(false);
     m_intake.setAutoIntakeMode(false);
     m_vision.setAutoAlign(false);
+    m_swerve.setLockedOn(false);
+    //System.out.println("hello");
   }
 }

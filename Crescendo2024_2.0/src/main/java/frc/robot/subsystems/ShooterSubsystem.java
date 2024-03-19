@@ -13,6 +13,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -42,14 +43,21 @@ public class ShooterSubsystem extends SubsystemBase {
   double targetRotations; 
   ShooterPosition targetPosition;
   ProfiledPIDController angleController;
+  PIDController shooterMotorController;
   double shooterAngleEncoderCalculate;
   //MODES
   boolean speakerMode;
   boolean ampMode;
   boolean climbMode;
   boolean intakeMode;
+  boolean init;
+  double velocitySpeedTop;
+  double velocitySpeedBottom;
 
   public ShooterSubsystem(SwerveSubsystem swerve) {
+    velocitySpeedTop = 0;
+    velocitySpeedBottom = 0;
+    init = true;
     //OTHER SUBSYSTEMS
     m_swerve = swerve;
     //MOTORS
@@ -75,6 +83,9 @@ public class ShooterSubsystem extends SubsystemBase {
     targetPosition = ShooterPosition.DEFAULT;
     angleController = new ProfiledPIDController(Constants.ShooterConstants.kP,Constants.ShooterConstants.kI,Constants.ShooterConstants. kD, new TrapezoidProfile.Constraints(1.7,999999999));
     angleController.setTolerance(0.001);
+    shooterMotorController = new PIDController(0.00000645, 0.00000001, 0.0000000);
+    //shooterMotorController = new PIDController()
+    shooterMotorController.setTolerance(5);
     shooterAngleEncoderCalculate = 0;
     speakerMode = false;
     ampMode = false;
@@ -102,6 +113,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean getIntakeMode(){
     return intakeMode;
   }
+  public void resetVelocity(){
+    velocitySpeedTop = 0;
+    velocitySpeedBottom = 0;
+  }
   public void setIntakeMode(boolean intakeMode){
     this.intakeMode = intakeMode;
   }
@@ -110,16 +125,25 @@ public class ShooterSubsystem extends SubsystemBase {
     return distanceEncoderTripped;
   }
   public void setShooterPosition(ShooterPosition position){
-    if (intakeMode){
-      targetPosition = ShooterPosition.INTAKE;
-    }
-    else{
-      targetPosition = position;
-    }
+    targetPosition = position;
   }
   public void setSpeakerPosition(double rotations){
+    if (rotations<0){
+      rotations = 0;
+    }
     positionsMap.replace(ShooterPosition.SPEAKER,rotations);
     shooterSpeakerPosition = rotations;
+  }
+  
+  public void setShooterMotorVelocity(double velocityTop, double velocityBottom){
+    double topCurrent = topShooterMotor.getEncoder().getVelocity();
+    double bottomCurrent = bottomShooterMotor.getEncoder().getVelocity();
+    velocitySpeedTop += shooterMotorController.calculate(topCurrent,velocityTop);
+    velocitySpeedBottom += shooterMotorController.calculate(bottomCurrent,velocityBottom);
+    topShooterMotor.set(velocitySpeedTop);
+    //System.out.println(shooterMotorController.calculate(topCurrent,velocityTop));
+    System.out.println(velocitySpeedTop);
+    bottomShooterMotor.set(velocitySpeedBottom);
   }
   public void setShooterMotors(double speed){
     topShooterMotor.set(speed);
@@ -129,25 +153,33 @@ public class ShooterSubsystem extends SubsystemBase {
     topShooterMotor.set(topSpeed);
     bottomShooterMotor.set(bottomSpeed);
   }
+  public void setDistanceEncoder(boolean distanceEncoder){
+    distanceEncoderTripped = distanceEncoder;
+  }
   public void setFeedMotor(double speed){
     shooterFeedMotor.set(speed);
   }
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("top velocity",topShooterMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("bottom velocity",bottomShooterMotor.getEncoder().getVelocity());
+    if (init){
+      topShooterMotor.setIdleMode(IdleMode.kBrake);
+      bottomShooterMotor.setIdleMode(IdleMode.kBrake);
+      init = false;
+    }
     // This method will be called once per scheduler run
     currentRotations = shooterAngleEncoder.getPosition()/Constants.ShooterConstants.shooterAngleConstants;
-    if (distanceEncoder.getVoltage()>4){
-      distanceEncoderTripped = true;
-    }
-    else{
+    //System.out.println(distanceEncoder.getVoltage());
+    if (distanceEncoder.getVoltage()<4.5){
       distanceEncoderTripped = false;
     }
-    //System.out.println(distanceEncoderTripped);
-    if (intakeMode && !m_swerve.getAutoMode()){
-      targetPosition = ShooterPosition.INTAKE;
+    else{
+      distanceEncoderTripped = true;
     }
+    //System.out.println(distanceEncoderTripped);
     shooterAngleMotor.setIdleMode(IdleMode.kBrake);
-    if (!(shooterAngleMotor.getOutputCurrent()>40)){
+    if (!(shooterAngleMotor.getOutputCurrent()>60)){
       shooterAngleEncoderCalculate = angleController.calculate(currentRotations,(double)positionsMap.get(targetPosition));
       shooterAngleMotor.set(shooterAngleEncoderCalculate);
     }

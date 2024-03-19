@@ -19,7 +19,7 @@ import frc.robot.Constants.VisionConstants;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
   PhotonCamera camera;
-  PhotonTrackedTarget value;
+  //PhotonTrackedTarget value;
   PhotonPipelineResult frame;
 
   double xOffset;
@@ -58,15 +58,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   }
 
   public void ameliorateX(){
+    //System.out.println(hasTarget);
     if (hasTarget){
-      if(((xOffset < -VisionConstants.X_ALIGNMENT_RANGE) || (xOffset > VisionConstants.X_ALIGNMENT_RANGE)) && !isAligned){
-        m_swerve.setLockedOn(true);
-        if(xOffset < 0){
-          xOffset += 360;
-        }
-        double rotationalMagnitude = m_swerve.driveToDegree(xOffset, 0);
-        m_swerve.setLockedOnRotationalMagnatude(rotationalMagnitude);
-      }
+      m_swerve.setLockedOn(true);
+      //if(((xOffset < -VisionConstants.X_ALIGNMENT_RANGE) || (xOffset > VisionConstants.X_ALIGNMENT_RANGE)) && !isAligned){
+      double rotationalMagnitude = m_swerve.driveToDegree(xOffset, 0);
+      //System.out.println("RM line 70 pvision " + rotationalMagnitude);
+      m_swerve.setLockedOnRotationalMagnatude(rotationalMagnitude);
+      System.out.println(rotationalMagnitude);
+      //}
     }
     else{
       m_swerve.setLockedOn(false);
@@ -93,16 +93,29 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //System.out.println(camera.isConnected());
+    
     frame = camera.getLatestResult();
     hasTarget = frame.hasTargets();
-    value = frame.getBestTarget();
-    if(value == null){
+    //value = frame.getBestTarget();
+    var targets = frame.getTargets();
+    /*for (PhotonTrackedTarget target:targets){
+      if (target.getFiducialId() == 4 || target.getFiducialId() == 7){
+        
+      }
+      else{
+        xOffset = 0;
+        yOffset = 0;
+      }
+    }*/
+
+    if(!hasTarget){
       xOffset = 0;
       yOffset = 0;
     }
     else{
-      xOffset = value.getYaw();
-      yOffset = value.getPitch();
+      xOffset = frame.getBestTarget().getYaw();
+      //System.out.println(xOffset);
+      yOffset = frame.getBestTarget().getPitch();
     }
     if (autoAlign){
       m_shooter.setShooterPosition(ShooterPosition.SPEAKER);

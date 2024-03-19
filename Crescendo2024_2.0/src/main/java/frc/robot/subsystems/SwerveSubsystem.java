@@ -152,10 +152,11 @@ public class SwerveSubsystem extends SubsystemBase {
     directionCorrector.enableContinuousInput(0, 360);
     directionCorrector.setTolerance(0.01);
     rotateToDegreeController.enableContinuousInput(0,360);
-    rotateToDegreeController.setTolerance(0.002);
-    yDisplacementController = new ProfiledPIDController(1.3,0.07,0.03,new TrapezoidProfile.Constraints(3,5));
-    xDisplacementController = new ProfiledPIDController(1.3,0.07,0.03, new TrapezoidProfile.Constraints(3,5));
+    rotateToDegreeController.setTolerance(0.009);
+    yDisplacementController = new ProfiledPIDController(1.3,0.07,0.03,new TrapezoidProfile.Constraints(3.1,5));
+    xDisplacementController = new ProfiledPIDController(1.3,0.07,0.03, new TrapezoidProfile.Constraints(3.1,5));
     yDisplacementController.setTolerance(0.05);
+    
     xDisplacementController.setTolerance(0.05);
     
     yDisplacement = 0;
@@ -209,17 +210,24 @@ public class SwerveSubsystem extends SubsystemBase {
     backRightDriver.setPosition(0);
   }
   public void drive(double strafeMagnatude1,double strafeDirection1,double rotationalMagnatude1){
+    if (lockedOn){
+      rotationalMagnatude1 = 0;
+    }
     this.strafeMagnatude = strafeMagnatude1; //* strafeMult;
     this.strafeDirection = strafeDirection1 - degreeOffset;
     strafeDirection = ((strafeDirection % 360) + 360) % 360;
     if (lockedOn){
+      //System.out.println("Hello line 219 swerve");
       rotationalMagnatude = lockedOnRotationalMagnatude;
+      //System.out.println(rotationalMagnatude);
     }
     else if (rotationalMagnatude1 != 0){
+      //System.out.println("HELLOOOO");
       isRotating = true;
       this.rotationalMagnatude = rotationalMagnatude1;
     }
     else{
+      //System.out.println("HELLOOOO");
       isRotating = false;
       rotationalMagnatude = directionCorrectorValue;
     }
@@ -241,6 +249,7 @@ public class SwerveSubsystem extends SubsystemBase {
       strafeMagnatude *= 0.5;
       rotationalMagnatude *= 0.44;
     }
+    //System.out.println("rotationalMagnautde " + rotationalMagnatude);
 
     
     driveVector = new Vector(strafeMagnatude,strafeDirection, true);
@@ -253,6 +262,7 @@ public class SwerveSubsystem extends SubsystemBase {
       backRightVector = new Vector(rotationalMagnatude,(315+180) % 360,true);
     }
     else{
+      //System.out.println("Hello");
       frontLeftVector = new Vector(rotationalMagnatude,135,true);
       frontRightVector = new Vector(rotationalMagnatude,(45),true);
       backLeftVector = new Vector(rotationalMagnatude,225,true);

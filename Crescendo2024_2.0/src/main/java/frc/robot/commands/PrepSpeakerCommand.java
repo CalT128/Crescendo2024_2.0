@@ -28,7 +28,9 @@ public class PrepSpeakerCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    isFinished = false;
     conflict = m_shooter.getAmpMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
+    System.out.println(conflict);
     if (!conflict){
       m_shooter.setSpeakerMode(true);
       m_shooter.setShooterPosition(ShooterPosition.SPEAKER);
@@ -36,6 +38,7 @@ public class PrepSpeakerCommand extends Command {
     }
     else{
       isFinished = true;
+      
     }
   }
 
@@ -55,10 +58,11 @@ public class PrepSpeakerCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_shooter.setSpeakerMode(false);
     if (!conflict){
       m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
       m_shooter.setShooterMotors(0);
-      m_shooter.setSpeakerMode(false);
+      
       m_vision.setLockedOn(false);
     }
   }

@@ -79,8 +79,9 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void ameliorateX(){
     if (hasTarget){
+      m_swerve.setLockedOn(true);
       if(((xOffset < -VisionConstants.X_ALIGNMENT_RANGE) || (xOffset > VisionConstants.X_ALIGNMENT_RANGE)) && !isAligned){
-        m_swerve.setLockedOn(true);
+        
         if(xOffset < 0){
           xOffset += 360;
         }

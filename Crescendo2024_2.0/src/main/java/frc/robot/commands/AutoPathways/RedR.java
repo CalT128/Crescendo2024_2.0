@@ -29,7 +29,6 @@ public class RedR extends SequentialCommandGroup {
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,false),
       new AutoDriveCommand(m_swerve,0,0,0,false),
-      
       new SetAutoModeCommand(m_swerve,false) 
     );
   }

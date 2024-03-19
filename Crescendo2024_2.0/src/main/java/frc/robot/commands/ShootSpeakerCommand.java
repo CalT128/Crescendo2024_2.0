@@ -21,6 +21,7 @@ public class ShootSpeakerCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    isFinished = false;
     if (m_shooter.getSpeakerMode()){
       m_shooter.setFeedMotor(1);
     }

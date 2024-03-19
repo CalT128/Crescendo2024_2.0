@@ -23,11 +23,16 @@ public class PrepAmpCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    isFinished = false;
     conflict = m_shooter.getSpeakerMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
+    System.out.println(conflict);
     if (!conflict){
+
       m_shooter.setAmpMode(true);
       m_shooter.setShooterPosition(ShooterPosition.AMP);
-      m_shooter.setShooterMotors(0.078,0.38);
+      m_shooter.resetVelocity();
+      //m_shooter.setShooterMotorVelocity(0.082,0.44);
+      
     }
     else{
       isFinished = true;
@@ -40,15 +45,20 @@ public class PrepAmpCommand extends Command {
     if (conflict){
       isFinished = true;
     }
+    //m_shooter.setShooterMotorVelocity(580,1995);// 1 2 and 3 amp shot
+    //m_shooter.setShooterMotorVelocity(600,2000);
+    
+    m_shooter.setShooterMotorVelocity(540,1930);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_shooter.setAmpMode(false);
     if (!conflict){
       m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
       m_shooter.setShooterMotors(0);
-      m_shooter.setAmpMode(false);
+      
     }
   }
   // Returns true when the command should end.

@@ -65,6 +65,7 @@ public class SwerveModule {
     public void drive(double speed, double targetDegree,boolean joystickOff,boolean lockedOn,boolean autoMode){
         //turnMotor.setNeutralMode(NeutralModeValue.Brake);
         //driveMotor.setNeutralMode(NeutralModeValue.Brake);
+        //System.out.println(speed);
         this.speed = speed;
         this.invertedSpeed = speed * -1;
 
@@ -95,12 +96,14 @@ public class SwerveModule {
         if (!inverted){
             turnController.calculate(this.absolutePosition,this.targetDegree);
             generalModuleDegree = absolutePosition;////////
+            //System.out.println(lockedOn);
             if (turnController.getPositionError()< 90){
-                if (!joystickOff){
+                if (!joystickOff || lockedOn){
+                    
                     turnMotor.set(-turnController.calculate(this.absolutePosition,this.targetDegree));
                     driveMotor.set(this.speed);
                 }
-                else if (!lockedOn && ! autoMode){
+                else if (!lockedOn && !autoMode){
                     turnMotor.set(0);
                     driveMotor.set(0);
                 }

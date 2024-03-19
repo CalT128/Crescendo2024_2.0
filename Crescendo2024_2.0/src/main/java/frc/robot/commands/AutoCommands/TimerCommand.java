@@ -15,13 +15,16 @@ public class TimerCommand extends Command {
   
   public TimerCommand(double time) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.time = time;
+    this.time
+     = time;
     isFinished = false;
+    timer = new Timer();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("Start TIMER");
     timer.start();
   }
 
@@ -30,6 +33,8 @@ public class TimerCommand extends Command {
   public void execute() {
     if (timer.get()>time){
       isFinished = true;
+      System.out.println("Finished TIMER");
+      timer.stop();
     }
   }
 

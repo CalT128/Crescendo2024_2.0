@@ -30,8 +30,9 @@ public class AutoSpeakerAlignCommand extends Command {
   @Override
   public void initialize() {
     m_vision.setAutoAlign(align);
+    m_shooter.setShooterMotors(0.9);
     timer.start();
-    if (align){
+    if (!align){
       isFinished = true;
     }
   }
@@ -51,7 +52,7 @@ public class AutoSpeakerAlignCommand extends Command {
       m_vision.setLockedOn(false);
       m_vision.setAutoAlign(false);
       m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
-      
+      m_shooter.setShooterMotors(0);
     }
     
   }

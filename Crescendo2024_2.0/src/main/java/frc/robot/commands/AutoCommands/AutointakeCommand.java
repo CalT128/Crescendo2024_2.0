@@ -23,16 +23,23 @@ public class AutoIntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
     m_intake.setIntakeSequenceFinished(false);
-    m_intake.deploySolenoidSequence(true);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intake.getIntakeSequenceFinished()){
-      isFinished = true;
+    if (deploy){
+      m_intake.setAutoIntakeMode(true);
     }
+    else{
+      m_intake.setAutoIntakeMode(false);
+      m_intake.deploySolenoidSequence(false);
+    }
+    if (m_intake.getIntakeSequenceFinished()){
+        isFinished = true;
+        //System.out.println("Hello Hello");
+      }
+    
   }
 
   // Called once the command ends or is interrupted.

@@ -9,7 +9,7 @@ import frc.robot.commands.AutoCommands.AutoDriveCommand;
 import frc.robot.commands.AutoCommands.AutoIntakeCommand;
 import frc.robot.commands.AutoCommands.AutoRunFeedCommand;
 import frc.robot.commands.AutoCommands.AutoSpeakerAlignCommand;
-import frc.robot.commands.AutoCommands.SetAutoIntakeModeCommand;
+
 import frc.robot.commands.AutoCommands.SetAutoModeCommand;
 import frc.robot.commands.AutoCommands.TimerCommand;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,11 +30,10 @@ public class RedM2N extends SequentialCommandGroup {
       new AutoSpeakerAlignCommand(m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,false),
-      new SetAutoIntakeModeCommand(m_intake,m_shooter,true),
       new AutoIntakeCommand(m_intake,true),
       new AutoDriveCommand(m_swerve,0,3,0,false),
       new TimerCommand(2),
-      new SetAutoIntakeModeCommand(m_intake,m_shooter,false),
+      new AutoIntakeCommand(m_intake,false),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_shooter,m_vision,false),

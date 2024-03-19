@@ -6,9 +6,12 @@ package frc.robot.commands.AutoPathways;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoCommands.AutoDriveCommand;
+import frc.robot.commands.AutoCommands.AutoIntakeCommand;
 import frc.robot.commands.AutoCommands.AutoRunFeedCommand;
 import frc.robot.commands.AutoCommands.AutoSpeakerAlignCommand;
+
 import frc.robot.commands.AutoCommands.SetAutoModeCommand;
+import frc.robot.commands.AutoCommands.TimerCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -30,10 +33,13 @@ public class TestPathway extends SequentialCommandGroup {
     m_intake = intake;
     m_shooter = shooter;
     addCommands(
+      
       new SetAutoModeCommand(m_swerve,true),
-      new AutoDriveCommand(m_swerve,0,0,40,false),
+      new AutoIntakeCommand(m_intake,true),
+      new TimerCommand(4)
+      /*new AutoDriveCommand(m_swerve,0,0,40,false),
       new AutoSpeakerAlignCommand(shooter, m_vision,true),
-      new AutoRunFeedCommand(shooter)
+      new AutoRunFeedCommand(shooter)*/
       /*new AutoDriveCommand(m_swerve,0,2.4,0,false),
       new AutoDriveCommand(m_swerve,0,0,30,false),
       new AutoDriveCommand(m_swerve,3.5,-2,0,false),

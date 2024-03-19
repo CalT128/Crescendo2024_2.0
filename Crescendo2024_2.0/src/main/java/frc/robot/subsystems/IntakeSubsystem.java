@@ -8,8 +8,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterPosition;
@@ -36,11 +38,21 @@ public class IntakeSubsystem extends SubsystemBase {
   boolean autoIntakeMode;
   //starting positions
   boolean init;
+  Joystick driverJoystick;
+  Joystick operatorJoystick;
+  boolean rumble;
+  Timer rumbleTimer;
+  DoubleSolenoid placeHolder;
 
   
-  public IntakeSubsystem(SwerveSubsystem swerve,ShooterSubsystem shooter) {
+  public IntakeSubsystem(SwerveSubsystem swerve,ShooterSubsystem shooter,Joystick driver, Joystick operator) {
+
+   driverJoystick = driver;
+   operatorJoystick = operator;
     m_swerve = swerve;
     m_shooter = shooter;
+    rumble = false;
+    rumbleTimer = new Timer();
     //MOTORS
     intakeMotor = new CANSparkMax(9,MotorType.kBrushless);
     //PNEUMATICS
@@ -48,6 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
     pneumaticHub.enableCompressorAnalog(90,100);
     topSolenoid = pneumaticHub.makeDoubleSolenoid(1,0);
     bottomSolenoid = pneumaticHub.makeDoubleSolenoid(3,2);
+    placeHolder = pneumaticHub.makeDoubleSolenoid(7, 6);
     //TIMER
     timer = new Timer();
     //MODES
@@ -57,6 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
     disableIntake = false;
     //starting position
     init = true;
+    autoIntakeMode = false;
   }
   public PneumaticHub getPeneumaticHub(){
     return pneumaticHub;
@@ -85,28 +99,31 @@ public class IntakeSubsystem extends SubsystemBase {
   public  boolean getIntakeSequenceFinished(){
     return intakeSequenceFinished;
   }
+  public void setBottomSolenoid(){
+    bottomSolenoid(DoubleSolenoid.Value.kForward);
+  }
   public void deploySolenoidSequence(boolean deploy){
     DoubleSolenoid.Value solenoidValue;
     if (!intakeSequenceFinished){
       
-      if (!m_swerve.getAutoMode()){
-        intakeMode = true;
-        
-      }
       timer.start();
       if (deploy){
-        runIntakeMotor(1);
-        m_shooter.setFeedMotor(1);
+        if (!m_swerve.getAutoMode()){
+        intakeMode = true;
+        }
+        if (!m_shooter.getClimbMode()){
+          runIntakeMotor(1);
+          m_shooter.setShooterPosition(ShooterPosition.INTAKE);
+          m_shooter.setFeedMotor(0.85);
+        }
         solenoidValue = DoubleSolenoid.Value.kForward;
         bottomSolenoid.set(solenoidValue);
         if (timer.get()>0.3){
           topSolenoid.set(solenoidValue);
-
           intakeSequenceFinished = true;
         }
       }
       else {
-        
         //System.out.println("Hello");
         //m_shooter.setFeedMotor(0);
         intakeMode = false;
@@ -114,13 +131,20 @@ public class IntakeSubsystem extends SubsystemBase {
         runIntakeMotor(0);
         solenoidValue = DoubleSolenoid.Value.kReverse;
         topSolenoid.set(solenoidValue);
+        if (timer.get()>0.2 && timer.get()<0.4){
+          m_shooter.setFeedMotor(-0.224);
+        }
+        else{
+          m_shooter.setFeedMotor(0);
+        }
         if (timer.get()>0.8){
+          m_shooter.setFeedMotor(0);
           bottomSolenoid.set(solenoidValue);
-          
           intakeSequenceFinished = true;
           timer.reset();
           timer.stop();
           disableIntake = false;
+          
         }
       }
       //System.out.println("HELLO");
@@ -133,20 +157,44 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     
   }
+  public Joystick getDriverJoystick(){
+    return driverJoystick;
+  }
+  public Joystick getOperatorJoystick(){
+    return operatorJoystick;
+  }
   public void setAutoIntakeMode(boolean autoIntake){
     this.autoIntakeMode = autoIntake;
   }
   public boolean getAutoIntakeMode(){
     return autoIntakeMode;
   }
+  public void setRumble(boolean rumble){
+    this.rumble = rumble;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    placeHolder.set(DoubleSolenoid.Value.kReverse);
+    if (rumble){
+      rumbleTimer.start();
+      driverJoystick.setRumble(RumbleType.kBothRumble,0.5);
+      operatorJoystick.setRumble(RumbleType.kBothRumble,0.5);
+      if (rumbleTimer.get()>1){
+        driverJoystick.setRumble(RumbleType.kBothRumble,0);
+        operatorJoystick.setRumble(RumbleType.kBothRumble,0);
+        rumble = false;
+        rumbleTimer.reset();
+        rumbleTimer.stop();
+      }
+    }
     if (autoIntakeMode){
-      m_shooter.setShooterPosition(ShooterPosition.INTAKE);
+      deploySolenoidSequence(true);
       if (m_shooter.getDistanceEncoderTripped()){
-        m_shooter.setFeedMotor(0);
-        m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
+        
+        System.out.println("Encoder tripped disable intake");
+        setIntakeSequenceFinished(false);
+        disableIntake();
         autoIntakeMode = false;
       }
     }
