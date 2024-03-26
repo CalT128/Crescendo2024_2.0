@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterPosition;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
 public class PrepSpeakerCommand extends Command {
   /** Creates a new PrepSpeakerCommand. */
@@ -30,11 +29,12 @@ public class PrepSpeakerCommand extends Command {
   public void initialize() {
     isFinished = false;
     conflict = m_shooter.getAmpMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
-    System.out.println(conflict);
+    //System.out.println(conflict);
     if (!conflict){
+      
       m_shooter.setSpeakerMode(true);
       m_shooter.setShooterPosition(ShooterPosition.SPEAKER);
-      m_shooter.setShooterMotors(0.9);
+      m_shooter.setShooterMotors(0.87);
     }
     else{
       isFinished = true;
@@ -46,6 +46,7 @@ public class PrepSpeakerCommand extends Command {
   @Override
   public void execute() {
     conflict = m_shooter.getAmpMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
+    //System.out.println(conflict);
     if (!conflict){
       m_vision.ameliorateX();
       m_vision.correctLauncher();
@@ -62,8 +63,7 @@ public class PrepSpeakerCommand extends Command {
     if (!conflict){
       m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
       m_shooter.setShooterMotors(0);
-      
-      m_vision.setLockedOn(false);
+      m_vision.setLockedOn(false);//CHECK LOCKEDON
     }
   }
   // Returns true when the command should end.

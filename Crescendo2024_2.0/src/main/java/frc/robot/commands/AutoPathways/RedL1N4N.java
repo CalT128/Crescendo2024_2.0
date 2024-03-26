@@ -20,26 +20,35 @@ import frc.robot.subsystems.SwerveSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class RedM2N extends SequentialCommandGroup {
-  /** Creates a new RedM2N. */
-  public RedM2N(SwerveSubsystem m_swerve, IntakeSubsystem m_intake, ShooterSubsystem m_shooter, PhotonVisionSubsystem m_vision) {
+public class RedL1N4N extends SequentialCommandGroup {
+  /** Creates a new RedL1N. */
+  public RedL1N4N(SwerveSubsystem m_swerve,IntakeSubsystem m_intake,ShooterSubsystem m_shooter,PhotonVisionSubsystem m_vision) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
-      new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
+      new AutoDriveCommand(m_swerve,0,0,50,false),
+      new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
-      new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,false),
+      new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,false),
       new AutoIntakeCommand(m_intake,true),
       new AutoDriveCommand(m_swerve,0,3,0,false),
       new TimerCommand(2),
       new AutoIntakeCommand(m_intake,false),
+      new AutoDriveCommand(m_swerve,0,0,30,false),
       new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
-      new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,false),
-      new AutoIntakeCommand(m_intake,false),
+      new AutoSpeakerAlignCommand(m_swerve, m_shooter, m_vision, false),
+      new AutoIntakeCommand(m_intake, true),
+      new AutoDriveCommand(m_swerve,-1,21,0,false),
+      new TimerCommand(2),
+      new AutoDriveCommand(m_swerve,1,-10,20,false),
+      new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
+      new AutoRunFeedCommand(m_shooter),
+      new AutoSpeakerAlignCommand(m_swerve, m_shooter, m_vision, false),
+      new AutoDriveCommand(m_swerve,0,0,0,false),
+      new AutoIntakeCommand (m_intake,false),
       new SetAutoModeCommand(m_swerve,false)
-      
     );
   }
 }

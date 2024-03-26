@@ -34,13 +34,14 @@ public class DeployIntakeCommand extends Command {
   @Override
   public void execute() {
     m_intake.deploySolenoidSequence(true);
+    
     //System.out.println("Hello");
     //System.out.println(m_shooter.getDistanceEncoderTripped());
     if (m_shooter.getDistanceEncoderTripped()){
       m_intake.setRumble(true);
       //m_intake.getDriverJoystick().setRumble(RumbleType.kBothRumble,0.4);
       //m_intake.getOperatorJoystick().setRumble(RumbleType.kBothRumble,0.4);
-      System.out.println("Hello");
+      //System.out.println("Hello");
       m_shooter.setFeedMotor(0);
       isFinished = true;
     }

@@ -24,7 +24,7 @@ public class TimerCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Start TIMER");
+    //System.out.println("Start TIMER");
     timer.start();
   }
 
@@ -33,7 +33,7 @@ public class TimerCommand extends Command {
   public void execute() {
     if (timer.get()>time){
       isFinished = true;
-      System.out.println("Finished TIMER");
+      //System.out.println("Finished TIMER");
       timer.stop();
     }
   }

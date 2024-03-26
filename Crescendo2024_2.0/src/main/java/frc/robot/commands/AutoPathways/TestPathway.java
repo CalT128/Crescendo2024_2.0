@@ -33,13 +33,11 @@ public class TestPathway extends SequentialCommandGroup {
     m_intake = intake;
     m_shooter = shooter;
     addCommands(
-      
       new SetAutoModeCommand(m_swerve,true),
-      new AutoIntakeCommand(m_intake,true),
-      new TimerCommand(4)
-      /*new AutoDriveCommand(m_swerve,0,0,40,false),
-      new AutoSpeakerAlignCommand(shooter, m_vision,true),
-      new AutoRunFeedCommand(shooter)*/
+      new AutoDriveCommand(m_swerve,3,3,0,true),
+      new AutoDriveCommand(m_swerve,-3,3,0,false)
+      //new AutoSpeakerAlignCommand(shooter, m_vision,true),
+      //new AutoRunFeedCommand(shooter)
       /*new AutoDriveCommand(m_swerve,0,2.4,0,false),
       new AutoDriveCommand(m_swerve,0,0,30,false),
       new AutoDriveCommand(m_swerve,3.5,-2,0,false),

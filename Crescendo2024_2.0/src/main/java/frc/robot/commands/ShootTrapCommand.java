@@ -22,7 +22,7 @@ public class ShootTrapCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setFeedMotor(-0.7);
+    m_shooter.setFeedMotor(-1);
   }
 
   // Called once the command ends or is interrupted.

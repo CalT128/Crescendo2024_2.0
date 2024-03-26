@@ -14,12 +14,15 @@ package frc.robot;
  */
 public final class Constants {
   public static class SwerveDriveConstants {
-    public static final double kP = 0.0037;
+    public static final double kP = 0.0039;
     public static final double kI = 0.00001;
     public static final double kD = 0.0;
-    public static final double rKP = 0.0050;
-    public static final double rKI = 0.002;
+    public static final double rKP = 0.009;
+    public static final double rKI = 0.00;
     public static final double rKD = 0.001;
+    public static final double akP = 0.014;
+    public static final double akI = 000;
+    public static final double akD = 0.001;
     public static final double frontLeftSensor = 272.4;
     public static final double frontRightSensor = 159.5;
     public static final double backLeftSensor = 16.4;
@@ -34,6 +37,7 @@ public final class Constants {
     public static final double shooterIntakePosition = 0.615;
     //public static final double shooterAmpPosition = 0.124886;
     public static final double shooterAmpPosition = 0.13;
+    //public static final double shooterAmpPosition = 1.2;
     public static final double shooterSpeakerPosition = 0.28;
     public static final double shooterClimbPosition = 2.25;
     public static final double shooterDefaultPosition = 0.00;
@@ -50,13 +54,13 @@ public final class Constants {
     DEFAULT
   }
   public static class VisionConstants {
-    public static final double INITIAL_LL_ANGLE = 24.71; //degrees
-    public static final double SPEAKER_HEIGHT = 6; //feet 
+    public static final double INITIAL_LL_ANGLE = 16.82; //degrees
+    public static final double SPEAKER_HEIGHT = 5.8; //feet 
     //public static final double LIMELIGHT_HEIGHT = 0; //height to limelight in feet MEASURE
     //TEST VARIABLES
-    public static final double APRILTAG_HEIGHT = 4.041666667;
+    public static final double APRILTAG_HEIGHT = 4.021666667;
     public static final double LIME_HEIGHT = 1.4583333333;
-    public static final double INITIAL_SHOOTER_ANGLE = 10; //degrees
+    public static final double INITIAL_SHOOTER_ANGLE = 10.5; //degrees
     public static final double DEGREES_TO_ROTATIONS = 0.011111111;
 
 

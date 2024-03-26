@@ -25,7 +25,7 @@ public class PrepAmpCommand extends Command {
   public void initialize() {
     isFinished = false;
     conflict = m_shooter.getSpeakerMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
-    System.out.println(conflict);
+    //System.out.println(conflict);
     if (!conflict){
 
       m_shooter.setAmpMode(true);
@@ -46,9 +46,10 @@ public class PrepAmpCommand extends Command {
       isFinished = true;
     }
     //m_shooter.setShooterMotorVelocity(580,1995);// 1 2 and 3 amp shot
-    //m_shooter.setShooterMotorVelocity(600,2000);
+    //m_shooter.setShooterMotorVelocity(600,2000);//GOOD ONE FOR SOFT
+    m_shooter.setShooterMotorVelocity(640, 2050);
     
-    m_shooter.setShooterMotorVelocity(540,1930);
+    //m_shooter.setShooterMotorVelocity(540,1930);
   }
 
   // Called once the command ends or is interrupted.

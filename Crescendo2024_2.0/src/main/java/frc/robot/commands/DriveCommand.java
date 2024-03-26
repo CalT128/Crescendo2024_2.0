@@ -63,10 +63,8 @@ public class DriveCommand extends Command {
     strafeTargetDegree = 360 - strafeTargetDegree;
     //strafeMagnatude = 0.1;
     //strafeTargetDegree = 0;
-    rotationMagnatude = 0;
-    if (m_swerve.getLockedOn()){
-      rotationMagnatude = 0;
-    }
+    //rotationMagnatude = 0;
+    
     //System.out.println(rotationMagnatude);
     m_swerve.drive(strafeMagnatude, strafeTargetDegree, rotationMagnatude);
   }

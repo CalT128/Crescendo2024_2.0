@@ -9,16 +9,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterPosition;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 public class AutoSpeakerAlignCommand extends Command {
   /** Creates a new AutoSpeakerAlignCommand. */
+  SwerveSubsystem m_swerve;
   ShooterSubsystem m_shooter;
   PhotonVisionSubsystem m_vision;
   Timer timer;
   boolean isFinished;
   boolean align;
-  public AutoSpeakerAlignCommand(ShooterSubsystem shooter, PhotonVisionSubsystem vision,boolean align) {
+  public AutoSpeakerAlignCommand(SwerveSubsystem m_swerve, ShooterSubsystem shooter, PhotonVisionSubsystem vision,boolean align) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this. m_swerve = m_swerve;
     m_shooter = shooter;
     m_vision = vision;
     timer = new Timer();
@@ -40,7 +43,7 @@ public class AutoSpeakerAlignCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get()>0.7){
+    if (timer.get()>1.2){
       isFinished = true;
     }
   }

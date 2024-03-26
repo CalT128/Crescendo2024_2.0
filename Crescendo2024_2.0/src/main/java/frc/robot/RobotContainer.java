@@ -21,6 +21,8 @@ import frc.robot.commands.AutoCommands.AutoDriveCommand;
 import frc.robot.commands.AutoCommands.AutoResetCommand;
 import frc.robot.commands.AutoPathways.RedL;
 import frc.robot.commands.AutoPathways.RedL1N;
+import frc.robot.commands.AutoPathways.RedL1N2N;
+import frc.robot.commands.AutoPathways.RedL1N4N;
 import frc.robot.commands.AutoPathways.RedM;
 import frc.robot.commands.AutoPathways.RedM2N;
 import frc.robot.commands.AutoPathways.RedR;
@@ -31,7 +33,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -77,6 +78,8 @@ public class RobotContainer {
   RedM2N m_redM2N;
   RedR m_redR;
   RedR3N m_redR3N;
+  RedL1N2N m_redL1N2N;
+  RedL1N4N m_redL1N4N;
   //AUTONOMOUS COMMAND
   AutoDriveCommand m_autoDriveCommand;
   SendableChooser<Command> m_chooser;
@@ -117,6 +120,8 @@ public class RobotContainer {
     m_redM2N = new RedM2N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
     m_redR = new RedR(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
     m_redR3N = new RedR3N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_redL1N2N = new RedL1N2N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_redL1N4N = new RedL1N4N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
 
     //AUTO COMMANDS
     //m_autoDriveCommand = new AutoDriveCommand(m_swerveSubsystem, 0, 0, 0, false)
@@ -129,6 +134,8 @@ public class RobotContainer {
     m_chooser.addOption("RedR", m_redR);
     m_chooser.addOption("RedR3N", m_redR3N);
     m_chooser.addOption("TEST",m_testPathway);
+    m_chooser.addOption("RedL1N2N", m_redL1N2N);
+    m_chooser.addOption("RedL1N4N",m_redL1N4N);
     autoReset = new AutoResetCommand(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
     configureBindings();
   }

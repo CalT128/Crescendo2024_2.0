@@ -5,28 +5,22 @@
 package frc.robot.commands.AutoPathways;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.AutoCommands.AutoRunFeedCommand;
-import frc.robot.commands.AutoCommands.AutoSpeakerAlignCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.commands.AutoCommands.AutoDriveCommand;
 import frc.robot.commands.AutoCommands.SetAutoModeCommand;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.PhotonVisionSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class RedM extends SequentialCommandGroup {
-  /** Creates a new RedM. */
-
-  public RedM(SwerveSubsystem m_swerve,IntakeSubsystem m_intake, ShooterSubsystem m_shooter,PhotonVisionSubsystem m_vision) {
+public class autoTaxi extends SequentialCommandGroup {
+  /** Creates a new autoTaxi. */
+  public autoTaxi(SwerveSubsystem m_swerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetAutoModeCommand(m_swerve,true),
-      new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,true),
-      new AutoRunFeedCommand(m_shooter),
-      new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,false),
+      new SetAutoModeCommand(m_swerve, true),
+      new AutoDriveCommand(m_swerve,-5,5,0,false),
       new SetAutoModeCommand(m_swerve,false)
     );
   }

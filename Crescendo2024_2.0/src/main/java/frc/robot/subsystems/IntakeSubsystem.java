@@ -104,18 +104,29 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   public void deploySolenoidSequence(boolean deploy){
     DoubleSolenoid.Value solenoidValue;
+    if (intakeMode){
+      if (!m_shooter.getStartEncoderTripped()){
+        m_shooter.setFeedMotor(1);
+      }
+      else{
+        //System.out.println("hhhh");
+        m_shooter.setFeedMotor(0.6);
+      }
+    }
     if (!intakeSequenceFinished){
-      
       timer.start();
       if (deploy){
-        if (!m_swerve.getAutoMode()){
+        //m_shooter.setFeedMotor(1);
+        
         intakeMode = true;
-        }
+        
         if (!m_shooter.getClimbMode()){
           runIntakeMotor(1);
+          
           m_shooter.setShooterPosition(ShooterPosition.INTAKE);
-          m_shooter.setFeedMotor(0.85);
+          
         }
+        
         solenoidValue = DoubleSolenoid.Value.kForward;
         bottomSolenoid.set(solenoidValue);
         if (timer.get()>0.3){
@@ -132,7 +143,7 @@ public class IntakeSubsystem extends SubsystemBase {
         solenoidValue = DoubleSolenoid.Value.kReverse;
         topSolenoid.set(solenoidValue);
         if (timer.get()>0.2 && timer.get()<0.4){
-          m_shooter.setFeedMotor(-0.224);
+          m_shooter.setFeedMotor(-0.15);
         }
         else{
           m_shooter.setFeedMotor(0);
@@ -191,8 +202,7 @@ public class IntakeSubsystem extends SubsystemBase {
     if (autoIntakeMode){
       deploySolenoidSequence(true);
       if (m_shooter.getDistanceEncoderTripped()){
-        
-        System.out.println("Encoder tripped disable intake");
+        //System.out.println("Encoder tripped disable intake");
         setIntakeSequenceFinished(false);
         disableIntake();
         autoIntakeMode = false;

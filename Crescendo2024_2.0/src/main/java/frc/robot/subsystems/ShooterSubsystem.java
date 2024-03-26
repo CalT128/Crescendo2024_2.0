@@ -35,6 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
   //ENCODERS
   RelativeEncoder shooterAngleEncoder;
   AnalogInput distanceEncoder;
+  AnalogInput startEncoder;
   boolean distanceEncoderTripped;
   //SHOOTER ANGLE POSITIONS
   Map<ShooterPosition, Double> positionsMap;
@@ -53,6 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
   boolean init;
   double velocitySpeedTop;
   double velocitySpeedBottom;
+  boolean starterSensorTripped;
 
   public ShooterSubsystem(SwerveSubsystem swerve) {
     velocitySpeedTop = 0;
@@ -70,6 +72,8 @@ public class ShooterSubsystem extends SubsystemBase {
     //ENCODERS
     shooterAngleEncoder = shooterAngleMotor.getEncoder();
     distanceEncoder = new AnalogInput(0);
+    startEncoder = new AnalogInput(1);
+    starterSensorTripped = false;
     distanceEncoderTripped = false;
     //SHOOTER ANGLEPOSITIONS
     shooterSpeakerPosition = Constants.ShooterConstants.shooterSpeakerPosition;
@@ -81,7 +85,7 @@ public class ShooterSubsystem extends SubsystemBase {
       put(ShooterPosition.DEFAULT, ShooterConstants.shooterDefaultPosition);
     }};
     targetPosition = ShooterPosition.DEFAULT;
-    angleController = new ProfiledPIDController(Constants.ShooterConstants.kP,Constants.ShooterConstants.kI,Constants.ShooterConstants. kD, new TrapezoidProfile.Constraints(1.7,999999999));
+    angleController = new ProfiledPIDController(Constants.ShooterConstants.kP,Constants.ShooterConstants.kI,Constants.ShooterConstants. kD, new TrapezoidProfile.Constraints(1.8,999999999));
     angleController.setTolerance(0.001);
     shooterMotorController = new PIDController(0.00000645, 0.00000001, 0.0000000);
     //shooterMotorController = new PIDController()
@@ -142,7 +146,7 @@ public class ShooterSubsystem extends SubsystemBase {
     velocitySpeedBottom += shooterMotorController.calculate(bottomCurrent,velocityBottom);
     topShooterMotor.set(velocitySpeedTop);
     //System.out.println(shooterMotorController.calculate(topCurrent,velocityTop));
-    System.out.println(velocitySpeedTop);
+    //System.out.println(velocitySpeedTop);
     bottomShooterMotor.set(velocitySpeedBottom);
   }
   public void setShooterMotors(double speed){
@@ -159,6 +163,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setFeedMotor(double speed){
     shooterFeedMotor.set(speed);
   }
+  public double getCurrentRotations(){
+    return currentRotations;
+  }
+  public boolean getStartEncoderTripped(){
+    return starterSensorTripped;
+  }
   @Override
   public void periodic() {
     SmartDashboard.putNumber("top velocity",topShooterMotor.getEncoder().getVelocity());
@@ -170,12 +180,21 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     // This method will be called once per scheduler run
     currentRotations = shooterAngleEncoder.getPosition()/Constants.ShooterConstants.shooterAngleConstants;
+    //System.out.println(startEncoder.getVoltage());
     //System.out.println(distanceEncoder.getVoltage());
     if (distanceEncoder.getVoltage()<4.5){
       distanceEncoderTripped = false;
     }
     else{
       distanceEncoderTripped = true;
+    }
+    if (startEncoder.getVoltage()<4.5){
+      starterSensorTripped = false;
+
+    }
+    else{
+      
+      starterSensorTripped = true;
     }
     //System.out.println(distanceEncoderTripped);
     shooterAngleMotor.setIdleMode(IdleMode.kBrake);
