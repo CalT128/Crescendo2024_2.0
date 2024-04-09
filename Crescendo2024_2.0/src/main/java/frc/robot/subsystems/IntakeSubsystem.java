@@ -109,8 +109,8 @@ public class IntakeSubsystem extends SubsystemBase {
         m_shooter.setFeedMotor(1);
       }
       else{
-        //System.out.println("hhhh");
-        m_shooter.setFeedMotor(0.6);
+        System.out.println("hhhh");
+        m_shooter.setFeedMotor(0.4);
       }
     }
     if (!intakeSequenceFinished){
@@ -143,7 +143,7 @@ public class IntakeSubsystem extends SubsystemBase {
         solenoidValue = DoubleSolenoid.Value.kReverse;
         topSolenoid.set(solenoidValue);
         if (timer.get()>0.2 && timer.get()<0.4){
-          m_shooter.setFeedMotor(-0.15);
+          m_shooter.setFeedMotor(-0.072);
         }
         else{
           m_shooter.setFeedMotor(0);

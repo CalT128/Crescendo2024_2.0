@@ -85,7 +85,7 @@ public class ShooterSubsystem extends SubsystemBase {
       put(ShooterPosition.DEFAULT, ShooterConstants.shooterDefaultPosition);
     }};
     targetPosition = ShooterPosition.DEFAULT;
-    angleController = new ProfiledPIDController(Constants.ShooterConstants.kP,Constants.ShooterConstants.kI,Constants.ShooterConstants. kD, new TrapezoidProfile.Constraints(1.8,999999999));
+    angleController = new ProfiledPIDController(Constants.ShooterConstants.kP,Constants.ShooterConstants.kI,Constants.ShooterConstants. kD, new TrapezoidProfile.Constraints(2,999999999));
     angleController.setTolerance(0.001);
     shooterMotorController = new PIDController(0.00000645, 0.00000001, 0.0000000);
     //shooterMotorController = new PIDController()

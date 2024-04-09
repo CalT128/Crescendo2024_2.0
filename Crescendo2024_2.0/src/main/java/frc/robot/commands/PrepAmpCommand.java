@@ -47,7 +47,8 @@ public class PrepAmpCommand extends Command {
     }
     //m_shooter.setShooterMotorVelocity(580,1995);// 1 2 and 3 amp shot
     //m_shooter.setShooterMotorVelocity(600,2000);//GOOD ONE FOR SOFT
-    m_shooter.setShooterMotorVelocity(640, 2050);
+    //m_shooter.setShooterMotorVelocity(640, 2050);
+    m_shooter.setShooterMotorVelocity(360,2400);
     
     //m_shooter.setShooterMotorVelocity(540,1930);
   }

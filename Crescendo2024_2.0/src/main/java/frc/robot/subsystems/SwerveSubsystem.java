@@ -120,11 +120,17 @@ public class SwerveSubsystem extends SubsystemBase {
   PhotonCamera m;
   double xCalculate;
   double yCalculate;
+  double ampRobotDegree;
+  boolean ampMode;
+  boolean redSide;
   
   
   
 
   public SwerveSubsystem(){
+    redSide = false;
+    ampMode = false;
+    ampRobotDegree = 0;
     xCalculate = 0;
     yCalculate = 0;
     
@@ -154,8 +160,8 @@ public class SwerveSubsystem extends SubsystemBase {
     directionCorrector.setTolerance(0.01);
     rotateToDegreeController.enableContinuousInput(0,360);
     rotateToDegreeController.setTolerance(0.009);
-    yDisplacementController = new ProfiledPIDController(1.4,0.07,0.03,new TrapezoidProfile.Constraints(11,7));
-    xDisplacementController = new ProfiledPIDController(1.4,0.07,0.03, new TrapezoidProfile.Constraints(11,7));
+    yDisplacementController = new ProfiledPIDController(1.45,0.07,0.03,new TrapezoidProfile.Constraints(11,7));
+    xDisplacementController = new ProfiledPIDController(1.45,0.07,0.03, new TrapezoidProfile.Constraints(11,7));
     yDisplacementController.setTolerance(0.05);
     xDisplacementController.setTolerance(0.05);
     autoRotateToDegreeController = new PIDController(Constants.SwerveDriveConstants.akP, Constants.SwerveDriveConstants.akI, Constants.SwerveDriveConstants.akD);
@@ -212,6 +218,9 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeftDriver.setPosition(0);
     backRightDriver.setPosition(0);
   }
+  public void setAmpMode(boolean ampMode){
+    this.ampMode = ampMode;
+  }
   public void drive(double strafeMagnatude1,double strafeDirection1,double rotationalMagnatude1){
     this.strafeMagnatude = strafeMagnatude1; //* strafeMult;
     this.strafeDirection = strafeDirection1 - degreeOffset;
@@ -219,6 +228,9 @@ public class SwerveSubsystem extends SubsystemBase {
     if (lockedOn){
       //System.out.println("LOCKED ON TRUE");
       rotationalMagnatude = lockedOnRotationalMagnatude;
+    }
+    else if (ampMode){
+      rotationalMagnatude = driveToDegree(getDegreeOffset(),ampRobotDegree);
     }
     else if (rotationalMagnatude1 != 0){
       isRotating = true;
@@ -304,6 +316,9 @@ public class SwerveSubsystem extends SubsystemBase {
     originDX = dx;
     originDY = dy;
   }
+  public void resetAutoAtSetPoint(){
+    autoAtSetPoint = false;
+  }
   public void autoDrive(double xfeet,double yfeet,double rotation,boolean inbetweenSetPoint){
     //autoMode = false;
     //double xMeters = xfeet/3.28084;
@@ -315,7 +330,7 @@ public class SwerveSubsystem extends SubsystemBase {
     
     double multiplier;
     if (inbetweenSetPoint){
-      multiplier = 3;
+      multiplier = 10;
     }
     else{
       multiplier = 1;
@@ -324,21 +339,36 @@ public class SwerveSubsystem extends SubsystemBase {
     yfeet = originDY + yfeet;
     xCalculate = xDisplacementController.calculate(dx,(xfeet) * multiplier);
     yCalculate = yDisplacementController.calculate(dy,(yfeet) * multiplier);
-    if (((Math.abs(xfeet-dx))-Math.abs(xfeet*multiplier)<=-Math.abs(xfeet * multiplier) + 0.5) && (Math.abs(yfeet-dy)-Math.abs(yfeet*multiplier)<=-Math.abs(yfeet * multiplier) + 0.5)  &&(Math.abs(degreeOffset-rotation)<7)){
-    //if (xDisplacementController.atSetpoint() && yDisplacementController.atSetpoint()){
-      //drive(0,0,0);
-      
-      
-      //System.out.println("AutoDriveFinished");
-      autoAtSetPoint = true;
-      //drive(0,0,0);
-      stopDriving();
-      //System.out.println(xDisplacementController.getPositionError());
-      //System.out.println("Hello");
+    /*if (!inbetweenSetPoint){
+      if (((Math.abs(xfeet-dx))-Math.abs(xfeet*multiplier)<=-Math.abs(xfeet * multiplier) + 0.5) && (Math.abs(yfeet-dy)-Math.abs(yfeet*multiplier)<=-Math.abs(yfeet * multiplier) + 0.5)  &&(Math.abs(degreeOffset-rotation)<7)){
+        //if (xDisplacementController.atSetpoint() && yDisplacementController.atSetpoint()){
+        //drive(0,0,0);
+        //System.out.println("AutoDriveFinished");
+        autoAtSetPoint = true;
+        stopDriving();
+      }
+      else{
+        autoAtSetPoint = false;
+      }
     }
-    else{
-      autoAtSetPoint = false;
-    }
+    else{*/
+      if (inbetweenSetPoint){
+        if (Math.abs(xfeet - dx)<= 0.6){
+          xCalculate = xDisplacementController.calculate(dx,xfeet);
+        }
+        if (Math.abs(yfeet - dy)<= 0.6){
+          yCalculate = yDisplacementController.calculate(dy, yfeet);
+        }
+      }
+      if ((Math.abs(xfeet-dx)<=0.7) && (Math.abs(yfeet-dy)<=0.7) &&(Math.abs(degreeOffset-rotation)<7)){
+        autoAtSetPoint = true;
+        stopDriving();
+        System.out.println("FINISHED");
+      }
+      else{
+        autoAtSetPoint= false;
+      }
+    //}
     Vector vector = new Vector(xCalculate,yCalculate);
     double rCalculate = autoDriveToDegree((getDegreeOffset()),rotation);
     if (!autoAtSetPoint){
@@ -485,6 +515,13 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("CalculateX", xCalculate);
     SmartDashboard.putNumber("CalculateY",yCalculate);
     SmartDashboard.putBoolean("LockedON",lockedOn);
+    SmartDashboard.getBoolean("Which Side",redSide);
+    if (redSide){
+      ampRobotDegree = 270;
+    }
+    else{
+      ampRobotDegree = 90;
+    }
 
   }
 }

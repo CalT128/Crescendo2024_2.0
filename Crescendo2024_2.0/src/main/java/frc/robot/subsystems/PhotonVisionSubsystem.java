@@ -88,14 +88,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         m_swerve.setLockedOn(true);
 
         //if(((xOffset < -VisionConstants.X_ALIGNMENT_RANGE) || (xOffset > VisionConstants.X_ALIGNMENT_RANGE)) && !isAligned){
-        rotationalMagnitude = m_swerve.driveToDegree(xOffset, 5);
+        rotationalMagnitude = m_swerve.driveToDegree(xOffset, 2.5);
         rotationalMagnitude *=2.4;
         m_swerve.setLockedOnRotationalMagnatude(rotationalMagnitude);
         if(m_swerve.getAutoMode()){
           m_swerve.drive(0,0,rotationalMagnitude);
         }
         //m_swerve.drive(0,0,rotationalMagnitude);
-        if (Math.abs(xOffset)<0.2){
+        if (Math.abs(xOffset)<7){
           isXAligned = true;
         }
         else{
@@ -110,6 +110,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_swerve.setLockedOn(false);
       isXAligned = false;
     }
+  }
+  public void resetIsAligned(){
+    isYAligned = false;
+    isXAligned = false;
   }
   public boolean getIsXAligned(){
     return isXAligned;
@@ -142,7 +146,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         angleWanted = 0;
       }
       m_shooter.setSpeakerPosition(angleWanted);
-      if (Math.abs(angleWanted - m_shooter.getCurrentRotations()) < 3){
+      if (Math.abs(angleWanted - m_shooter.getCurrentRotations()) < 0.06){
         isYAligned = true;
       }
       else{
@@ -164,6 +168,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     //System.out.println(hasTarget);
     //System.out.println(camera.isConnected());
     SmartDashboard.putNumber("VISION X OFFSET",xOffset);
+    SmartDashboard.putBoolean("ISYALIGNED:", isYAligned);
+    SmartDashboard.putBoolean("ISXALIGNED",isXAligned);
     
     //value = frame.getBestTarget();
     // var targets = frame.getTargets();

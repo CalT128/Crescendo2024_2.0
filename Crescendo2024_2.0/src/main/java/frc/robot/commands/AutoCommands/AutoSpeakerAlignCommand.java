@@ -37,13 +37,14 @@ public class AutoSpeakerAlignCommand extends Command {
     timer.start();
     if (!align){
       isFinished = true;
+      m_vision.resetIsAligned();
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get()>1.2){
+    if (m_vision.getIsXAligned() && m_vision.getIsYAligned()){
       isFinished = true;
     }
   }
@@ -57,6 +58,8 @@ public class AutoSpeakerAlignCommand extends Command {
       m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
       m_shooter.setShooterMotors(0);
     }
+    m_vision.resetIsAligned();
+    
     
   }
 
