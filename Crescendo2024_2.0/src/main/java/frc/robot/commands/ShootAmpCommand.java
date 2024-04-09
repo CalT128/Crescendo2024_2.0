@@ -29,7 +29,7 @@ public class ShootAmpCommand extends Command {
     }
     else{
       m_shooter.setFeedMotor(0.7);
-      m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
+      m_shooter.setShooterPosition(ShooterPosition.DEFAULT);//CHECK
     }
   }
 

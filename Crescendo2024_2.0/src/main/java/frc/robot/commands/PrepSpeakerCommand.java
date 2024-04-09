@@ -34,7 +34,7 @@ public class PrepSpeakerCommand extends Command {
       
       m_shooter.setSpeakerMode(true);
       m_shooter.setShooterPosition(ShooterPosition.SPEAKER);
-      m_shooter.setShooterMotors(0.87);
+      m_shooter.setShooterMotors(0.9);
     }
     else{
       isFinished = true;
@@ -65,6 +65,7 @@ public class PrepSpeakerCommand extends Command {
       m_shooter.setShooterMotors(0);
       m_vision.setLockedOn(false);//CHECK LOCKEDON
     }
+    m_vision.resetIsAligned();
   }
   // Returns true when the command should end.
   @Override
