@@ -15,7 +15,8 @@ public class AutoDriveCommand extends Command {
   double rotation;
   boolean inBetween;
   boolean isFinished;
-  public AutoDriveCommand(SwerveSubsystem swerve,double x, double y, double rotation, boolean inBetween) {
+  double mult;
+  public AutoDriveCommand(SwerveSubsystem swerve,double x, double y, double rotation, boolean inBetween, double mult) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_swerve = swerve;
     xfeet = x;
@@ -23,6 +24,7 @@ public class AutoDriveCommand extends Command {
     this.rotation = rotation;
     this.inBetween = inBetween;
     isFinished = false;
+    this.mult = mult;
   }
 
   // Called when the command is initially scheduled.
@@ -30,12 +32,13 @@ public class AutoDriveCommand extends Command {
   public void initialize() {
     m_swerve.setAutoPos();
     m_swerve.setAutoAtSetPoint(false);
+    m_swerve.prepInbetweenPoint(xfeet,yfeet);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerve.autoDrive(xfeet,yfeet,rotation,inBetween);
+    m_swerve.autoDrive(xfeet,yfeet,rotation,inBetween,mult);
     if (m_swerve.getAtAutoSetPoint()){
       isFinished = true;
     }

@@ -57,7 +57,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public double distanceToTarget(double degrees){
     if(hasTarget){
       double distance = (VisionConstants.APRILTAG_HEIGHT - VisionConstants.LIME_HEIGHT) / Math.tan(Math.toRadians(degrees + VisionConstants.INITIAL_LL_ANGLE));
+      System.out.println(distance);
       return distance;
+
     } else {
       return 0;
     }
@@ -139,14 +141,30 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       //     hasTarget = true;
       //   }
       // }
-      double angleCalculated = (90 - Math.toDegrees((Math.atan((VisionConstants.SPEAKER_HEIGHT - 
-        VisionConstants.LIME_HEIGHT) / distanceToTarget(yOffset)))) - VisionConstants.INITIAL_SHOOTER_ANGLE);
-      double angleWanted = VisionConstants.DEGREES_TO_ROTATIONS * angleCalculated;
+      double angleCalculated = 0;
+      double angleWanted = 0;
+      if (distanceToTarget(yOffset)<12.3){
+        angleCalculated = (90 - Math.toDegrees((Math.atan((VisionConstants.SPEAKER_HEIGHT - 
+          VisionConstants.LIME_HEIGHT) / distanceToTarget(yOffset)))) - VisionConstants.INITIAL_SHOOTER_ANGLE);
+        angleWanted = VisionConstants.DEGREES_TO_ROTATIONS * angleCalculated;
+      }
+      else if (yOffset>=12.3 && yOffset<17.4){
+        angleCalculated = (90 - Math.toDegrees((Math.atan((5.265/*speakerheight*/ - 
+          VisionConstants.LIME_HEIGHT) / distanceToTarget(yOffset)))) - 10.2/*starting robot angle */);
+        angleWanted = VisionConstants.DEGREES_TO_ROTATIONS * angleCalculated;
+      }
+      else{
+        angleCalculated = (90 - Math.toDegrees((Math.atan((5.265/*speakerheight*/ - 
+          VisionConstants.LIME_HEIGHT) / distanceToTarget(yOffset)))) - 10.2/*starting robot angle */);
+        angleWanted = VisionConstants.DEGREES_TO_ROTATIONS * angleCalculated;
+        
+      }
+      
       if (angleWanted < 0){
         angleWanted = 0;
       }
       m_shooter.setSpeakerPosition(angleWanted);
-      if (Math.abs(angleWanted - m_shooter.getCurrentRotations()) < 0.06){
+      if (Math.abs(angleWanted - m_shooter.getCurrentRotations()) < 0.01){
         isYAligned = true;
       }
       else{
@@ -163,6 +181,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public void setAutoAlign(boolean autoAlign){
     this.autoAlign = autoAlign;
   }
+
+  public double getYOffset(){
+    return yOffset;
+  }
+
   @Override
   public void periodic() {
     //System.out.println(hasTarget);
@@ -201,6 +224,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("rotationalMagnitude",rotationalMagnitude);
     SmartDashboard.putBoolean("Has-Target", hasTarget);
     SmartDashboard.putBoolean("Is-Aligned", isAligned);
-    SmartDashboard.putNumber("DistanceToTarget", targetDistance);
+    SmartDashboard.putNumber("DistanceToTarget", distanceToTarget(yOffset));
   }
 }

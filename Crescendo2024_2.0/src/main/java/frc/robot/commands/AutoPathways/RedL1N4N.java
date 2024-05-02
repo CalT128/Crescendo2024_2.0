@@ -5,6 +5,7 @@
 package frc.robot.commands.AutoPathways;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AutoCommands.AutoCheckIntakeRetractedCommand;
 import frc.robot.commands.AutoCommands.AutoDriveCommand;
 import frc.robot.commands.AutoCommands.AutoIntakeCommand;
 import frc.robot.commands.AutoCommands.AutoRunFeedCommand;
@@ -27,26 +28,26 @@ public class RedL1N4N extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
-      new AutoDriveCommand(m_swerve,0,0,50,false),
+      new AutoDriveCommand(m_swerve,0,0,50,false,1),
       new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,false),
       new AutoIntakeCommand(m_intake,true),
-      new AutoDriveCommand(m_swerve,0,3,0,false),
+      new AutoDriveCommand(m_swerve,0,3,0,false,1),
       new TimerCommand(2),
       new AutoIntakeCommand(m_intake,false),
-      new AutoDriveCommand(m_swerve,0,0,30,false),
+      new AutoDriveCommand(m_swerve,0,0,30,false,1),
       new AutoSpeakerAlignCommand(m_swerve, m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve, m_shooter, m_vision, false),
       new AutoIntakeCommand(m_intake, true),
-      new AutoDriveCommand(m_swerve,-1,21,0,false),
-      new TimerCommand(2),
-      new AutoDriveCommand(m_swerve,1,-10,20,false),
+      new AutoDriveCommand(m_swerve,0,2,20,false,1),
+      new AutoCheckIntakeRetractedCommand(m_intake),
+      new AutoDriveCommand(m_swerve,0,-14.5,20,false,1),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve, m_shooter, m_vision, false),
-      new AutoDriveCommand(m_swerve,0,0,0,false),
+      new AutoDriveCommand(m_swerve,0,0,0,false,1),
       new AutoIntakeCommand (m_intake,false),
       new SetAutoModeCommand(m_swerve,false)
     );

@@ -28,20 +28,20 @@ public class RedL1N extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
-      new AutoDriveCommand(m_swerve,0,1.3,40,false),
+      new AutoDriveCommand(m_swerve,0,1.3,40,false,1),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,false),
       new AutoIntakeCommand(m_intake,true),
-      new AutoDriveCommand(m_swerve,0,2.8,0,false),
+      new AutoDriveCommand(m_swerve,0,2.8,0,false,1),
       /*new TimerCommand(2),
       new AutoIntakeCommand(m_intake,false),*/
       new AutoCheckIntakeRetractedCommand(m_intake),
-      new AutoDriveCommand(m_swerve,0,0,30,false),
+      new AutoDriveCommand(m_swerve,0,0,30,false,1),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter, m_vision, false),
-      new AutoDriveCommand(m_swerve,0,0,0,false),
+      new AutoDriveCommand(m_swerve,0,0,0,false,1),
       new AutoIntakeCommand(m_intake,false),
       new SetAutoModeCommand(m_swerve,false)
     );

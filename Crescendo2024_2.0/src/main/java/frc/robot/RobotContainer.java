@@ -5,6 +5,7 @@
 package frc.robot;
 
 
+import frc.robot.commands.DeliveryPrepCommand;
 import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.LiftCommand;
@@ -19,6 +20,8 @@ import frc.robot.commands.ShootTrapCommand;
 import frc.robot.commands.ToggleLiftSolenoidCommand;
 import frc.robot.commands.AutoCommands.AutoDriveCommand;
 import frc.robot.commands.AutoCommands.AutoResetCommand;
+import frc.robot.commands.AutoPathways.BlueL11N8N;
+import frc.robot.commands.AutoPathways.BlueR9N4N;
 import frc.robot.commands.AutoPathways.RedL;
 import frc.robot.commands.AutoPathways.RedL1N;
 import frc.robot.commands.AutoPathways.RedL1N2N;
@@ -80,10 +83,14 @@ public class RobotContainer {
   RedR3N m_redR3N;
   RedL1N2N m_redL1N2N;
   RedL1N4N m_redL1N4N;
+  BlueR9N4N m_blueR9N4N;
+  BlueL11N8N m_blueL11N8N;
   //AUTONOMOUS COMMAND
   AutoDriveCommand m_autoDriveCommand;
   SendableChooser<Command> m_chooser;
+  
   AutoResetCommand autoReset;
+  DeliveryPrepCommand m_deliveryCommand;
   
   public RobotContainer() {
     ////SUBSYSTEMS////
@@ -98,19 +105,20 @@ public class RobotContainer {
     ////CONTROLLERS////
     
     ////COMMANDS////
-
+    
     m_driveCommand = new DriveCommand(m_swerveSubsystem, driverJoystick);
     m_deployIntakeCommand = new DeployIntakeCommand(m_intakeSubsystem, m_shooterSubsystem);
-    m_prepSpeakerCommand = new PrepSpeakerCommand(m_shooterSubsystem, m_photonVisionSubsystem);
-    m_prepAmpCommand = new PrepAmpCommand(m_shooterSubsystem);
+    m_prepSpeakerCommand = new PrepSpeakerCommand(m_shooterSubsystem, m_photonVisionSubsystem,m_intakeSubsystem);
+    m_prepAmpCommand = new PrepAmpCommand(m_swerveSubsystem,m_shooterSubsystem);
     m_prepClimbCommand = new PrepClimbCommand(m_shooterSubsystem,m_intakeSubsystem,m_climbSubsystem);
-    m_shootSpeakerCommand = new ShootSpeakerCommand(m_shooterSubsystem);
+    m_shootSpeakerCommand = new ShootSpeakerCommand(m_shooterSubsystem,m_photonVisionSubsystem);
     m_shootAmpCommand = new ShootAmpCommand(m_shooterSubsystem);
     m_liftCommand = new LiftCommand(m_climbSubsystem);
     m_retractCommand = new RetractCommand(m_climbSubsystem);
     m_toggleLiftSolenoidCommand = new ToggleLiftSolenoidCommand(m_climbSubsystem);
     m_shootTrapCommand = new ShootTrapCommand(m_shooterSubsystem);
     m_resetRobotCommand = new ResetRobotCommand(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_deliveryCommand = new DeliveryPrepCommand(m_swerveSubsystem, m_shooterSubsystem);
     
     //AUTO
     m_testPathway = new TestPathway(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem,m_photonVisionSubsystem);
@@ -122,10 +130,13 @@ public class RobotContainer {
     m_redR3N = new RedR3N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
     m_redL1N2N = new RedL1N2N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
     m_redL1N4N = new RedL1N4N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_blueR9N4N = new BlueR9N4N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
+    m_blueL11N8N = new BlueL11N8N(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
 
     //AUTO COMMANDS
     //m_autoDriveCommand = new AutoDriveCommand(m_swerveSubsystem, 0, 0, 0, false)
     // Configure the trigger bindings
+    
     m_chooser = new SendableChooser<>();
     m_chooser.setDefaultOption("RedL",m_redL);
     m_chooser.addOption("RedL1N",m_redL1N);
@@ -136,6 +147,8 @@ public class RobotContainer {
     m_chooser.addOption("TEST",m_testPathway);
     m_chooser.addOption("RedL1N2N", m_redL1N2N);
     m_chooser.addOption("RedL1N4N",m_redL1N4N);
+    m_chooser.addOption("BlueR9N4N", m_blueR9N4N);
+    m_chooser.addOption("BlueL11N8N",m_blueL11N8N);
     autoReset = new AutoResetCommand(m_swerveSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_photonVisionSubsystem);
     configureBindings();
   }
@@ -153,7 +166,7 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     JoystickButton deployIntakeButton = new JoystickButton(operatorJoystick,4);
     JoystickButton prepSpeakerButton = new JoystickButton(operatorJoystick,6);
-    JoystickButton prepAmpButton = new JoystickButton(operatorJoystick,5);
+    //JoystickButton prepAmpButton = new JoystickButton(operatorJoystick,5);
     JoystickButton prepClimbButton = new JoystickButton(operatorJoystick,9);
     JoystickButton shootSpeakerButton = new JoystickButton(operatorJoystick,3);
     JoystickButton shootAmpButton = new JoystickButton(operatorJoystick,1);
@@ -162,19 +175,21 @@ public class RobotContainer {
     JoystickButton toggleLiftSolenoidButton = new JoystickButton(operatorJoystick,2);
     JoystickButton shootTrapButton = new JoystickButton(operatorJoystick,10);
     JoystickButton resetRobotButton = new JoystickButton(driverJoystick,7);
+    JoystickButton deliveryButton = new JoystickButton(operatorJoystick,5);
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     deployIntakeButton.toggleOnTrue(m_deployIntakeCommand);
     prepSpeakerButton.toggleOnTrue(m_prepSpeakerCommand);
-    prepAmpButton.toggleOnTrue(m_prepAmpCommand);
-    prepClimbButton.toggleOnTrue(m_prepClimbCommand);
+    //prepAmpButton.toggleOnTrue(m_prepAmpCommand);
+    //prepClimbButton.toggleOnTrue(m_prepClimbCommand);
     shootSpeakerButton.whileTrue(m_shootSpeakerCommand);
     shootAmpButton.whileTrue(m_shootAmpCommand);
     liftButton.whileTrue(m_liftCommand);
     retractButton.whileTrue(m_retractCommand);
     toggleLiftSolenoidButton.onTrue(m_toggleLiftSolenoidCommand);
-    shootTrapButton.whileTrue(m_shootTrapCommand);
+    shootTrapButton.toggleOnTrue(m_shootTrapCommand);
     resetRobotButton.onTrue(m_resetRobotCommand);
+    deliveryButton.toggleOnTrue(m_deliveryCommand);
     SmartDashboard.putData(m_chooser);
   }
 

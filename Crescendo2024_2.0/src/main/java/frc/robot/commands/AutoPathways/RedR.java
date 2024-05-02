@@ -24,11 +24,11 @@ public class RedR extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
-      new AutoDriveCommand(m_swerve,0,0,320,false),
+      new AutoDriveCommand(m_swerve,0,0,320,false,1),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,false),
-      new AutoDriveCommand(m_swerve,0,0,0,false),
+      new AutoDriveCommand(m_swerve,0,0,0,false,1),
       new SetAutoModeCommand(m_swerve,false) 
     );
   }

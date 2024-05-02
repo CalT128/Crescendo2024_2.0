@@ -7,14 +7,17 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterPosition;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 public class PrepAmpCommand extends Command {
   /** Creates a new PrepAmpCommand. */
+  SwerveSubsystem m_swerve;
   ShooterSubsystem m_shooter;
   boolean conflict;
   boolean isFinished;
-  public PrepAmpCommand(ShooterSubsystem shooter) {
+  public PrepAmpCommand(SwerveSubsystem swerve, ShooterSubsystem shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_swerve = swerve;
     m_shooter = shooter;
     conflict = false;
     isFinished = false;
@@ -27,10 +30,11 @@ public class PrepAmpCommand extends Command {
     conflict = m_shooter.getSpeakerMode() || m_shooter.getClimbMode() || m_shooter.getIntakeMode();
     //System.out.println(conflict);
     if (!conflict){
-
+      m_swerve.setAmpMode(true);
       m_shooter.setAmpMode(true);
       m_shooter.setShooterPosition(ShooterPosition.AMP);
       m_shooter.resetVelocity();
+      
       //m_shooter.setShooterMotorVelocity(0.082,0.44);
       
     }
@@ -48,7 +52,7 @@ public class PrepAmpCommand extends Command {
     //m_shooter.setShooterMotorVelocity(580,1995);// 1 2 and 3 amp shot
     //m_shooter.setShooterMotorVelocity(600,2000);//GOOD ONE FOR SOFT
     //m_shooter.setShooterMotorVelocity(640, 2050);
-    m_shooter.setShooterMotorVelocity(360,2400);
+    m_shooter.setShooterMotorVelocity(400,2600);
     
     //m_shooter.setShooterMotorVelocity(540,1930);
   }
@@ -57,6 +61,7 @@ public class PrepAmpCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.setAmpMode(false);
+    m_swerve.setAmpMode(false);
     if (!conflict){
       m_shooter.setShooterPosition(ShooterPosition.DEFAULT);
       m_shooter.setShooterMotors(0);

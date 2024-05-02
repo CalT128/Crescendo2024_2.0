@@ -42,11 +42,12 @@ public class IntakeSubsystem extends SubsystemBase {
   Joystick operatorJoystick;
   boolean rumble;
   Timer rumbleTimer;
+  boolean disableShooterIntake;
   DoubleSolenoid placeHolder;
 
   
   public IntakeSubsystem(SwerveSubsystem swerve,ShooterSubsystem shooter,Joystick driver, Joystick operator) {
-
+    disableShooterIntake = false;
    driverJoystick = driver;
    operatorJoystick = operator;
     m_swerve = swerve;
@@ -101,6 +102,38 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   public void setBottomSolenoid(){
     bottomSolenoid(DoubleSolenoid.Value.kForward);
+  }
+  public void setTopSolenoid(){
+    topSolenoid(DoubleSolenoid.Value.kForward);
+  }
+  public void resetTopSolenoid(){
+    topSolenoid(DoubleSolenoid.Value.kReverse);
+  }
+  public void deployShooterSequence(boolean deploy){
+    DoubleSolenoid.Value solenoidValue;
+    if (!intakeSequenceFinished){
+      timer.start();
+      if (deploy){
+        solenoidValue = DoubleSolenoid.Value.kForward;
+        bottomSolenoid.set(solenoidValue);
+        if (timer.get()>0.3){
+          topSolenoid.set(solenoidValue);
+          intakeSequenceFinished = true;
+        }
+      }
+      else{
+        solenoidValue = DoubleSolenoid.Value.kReverse;  
+        topSolenoid.set(solenoidValue);
+        if (timer.get()>0.3){
+          bottomSolenoid.set(solenoidValue);
+          intakeSequenceFinished = true;
+          disableShooterIntake = false;
+        }
+      }
+    }
+  }
+  public void disableShooterIntake(){
+    disableShooterIntake = true;
   }
   public void deploySolenoidSequence(boolean deploy){
     DoubleSolenoid.Value solenoidValue;
@@ -186,6 +219,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
     placeHolder.set(DoubleSolenoid.Value.kReverse);
     if (rumble){
       rumbleTimer.start();
@@ -219,6 +253,10 @@ public class IntakeSubsystem extends SubsystemBase {
       setIntakeSequenceFinished(false);
       deploySolenoidSequence(false);
       //System.out.println("Hello");
+    }
+    if (disableShooterIntake){
+      setIntakeSequenceFinished(false);
+      deployShooterSequence(false);
     }
     SmartDashboard.putBoolean("INTAKE MODE:",intakeMode);
   }

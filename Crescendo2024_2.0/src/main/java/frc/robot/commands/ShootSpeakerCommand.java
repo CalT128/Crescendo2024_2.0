@@ -5,15 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootSpeakerCommand extends Command {
   /** Creates a new ShootSpeaker. */
   ShooterSubsystem m_shooter;
+  PhotonVisionSubsystem m_vision;
   boolean isFinished;
   
-  public ShootSpeakerCommand(ShooterSubsystem shooter) {
+  public ShootSpeakerCommand(ShooterSubsystem shooter,PhotonVisionSubsystem vision) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_vision = vision;
     m_shooter = shooter;
     isFinished = false;
   }
@@ -23,7 +26,14 @@ public class ShootSpeakerCommand extends Command {
   public void initialize() {
     isFinished = false;
     if (m_shooter.getSpeakerMode()){
+      /*if (m_vision.getIsYAligned() && m_vision.getIsXAligned()){
+        m_shooter.setFeedMotor(1);
+      }
+      else{
+        m_shooter.setFeedMotor(0);
+      }*/
       m_shooter.setFeedMotor(1);
+      
     }
     else{
       isFinished = true;
@@ -32,7 +42,15 @@ public class ShootSpeakerCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    /*if (m_vision.getIsYAligned() && m_vision.getIsXAligned()){
+      m_shooter.setFeedMotor(1);
+    }
+    else{
+      m_shooter.setFeedMotor(0);
+    }*/
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override

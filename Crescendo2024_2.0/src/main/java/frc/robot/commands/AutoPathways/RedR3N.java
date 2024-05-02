@@ -5,6 +5,7 @@
 package frc.robot.commands.AutoPathways;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AutoCommands.AutoCheckIntakeRetractedCommand;
 import frc.robot.commands.AutoCommands.AutoDriveCommand;
 import frc.robot.commands.AutoCommands.AutoIntakeCommand;
 import frc.robot.commands.AutoCommands.AutoRunFeedCommand;
@@ -27,19 +28,18 @@ public class RedR3N extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetAutoModeCommand(m_swerve,true),
-      new AutoDriveCommand(m_swerve,0,1.3,320,false),
+      new AutoDriveCommand(m_swerve,0,1.3,320,false,1),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,false),
       new AutoIntakeCommand(m_intake,true),
-      new AutoDriveCommand(m_swerve,0,2,0,false),
-      new TimerCommand(2),
-      new AutoIntakeCommand(m_intake,false),
-      new AutoDriveCommand(m_swerve,0,0,330,false),
+      new AutoDriveCommand(m_swerve,0,2,0,false,1),
+      new AutoCheckIntakeRetractedCommand(m_intake),
+      new AutoDriveCommand(m_swerve,0,0,330,false,1),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,true),
       new AutoRunFeedCommand(m_shooter),
       new AutoSpeakerAlignCommand(m_swerve,m_shooter,m_vision,false),
-      new AutoDriveCommand(m_swerve,0,0,0,false),
+      new AutoDriveCommand(m_swerve,0,0,0,false,1),
       new AutoIntakeCommand (m_intake,false),
       new SetAutoModeCommand(m_swerve,false)
     );

@@ -38,12 +38,15 @@ public class DeployIntakeCommand extends Command {
     //System.out.println("Hello");
     //System.out.println(m_shooter.getDistanceEncoderTripped());
     if (m_shooter.getDistanceEncoderTripped()){
-      m_intake.setRumble(true);
+      
       //m_intake.getDriverJoystick().setRumble(RumbleType.kBothRumble,0.4);
       //m_intake.getOperatorJoystick().setRumble(RumbleType.kBothRumble,0.4);
       //System.out.println("Hello");
       m_shooter.setFeedMotor(0);
       isFinished = true;
+    }
+    if (m_shooter.getStartEncoderTripped()){
+      m_intake.setRumble(true);
     }
   }
 

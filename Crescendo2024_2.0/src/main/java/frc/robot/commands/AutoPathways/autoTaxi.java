@@ -20,7 +20,7 @@ public class autoTaxi extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetAutoModeCommand(m_swerve, true),
-      new AutoDriveCommand(m_swerve,-5,5,0,false),
+      new AutoDriveCommand(m_swerve,0,5,0,false,1),
       new SetAutoModeCommand(m_swerve,false)
     );
   }

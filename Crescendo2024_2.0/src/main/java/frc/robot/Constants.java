@@ -37,11 +37,15 @@ public final class Constants {
     public static final double shooterIntakePosition = 0.615;
     //public static final double shooterAmpPosition = 0.124886;
     //public static final double shooterAmpPosition = 0.13;
-    public static final double shooterAmpPosition = 0.45;
+
+
+    public static final double shooterAmpPosition = 0.23;
+    //public static final double shooterAmpPosition = 0.67;
     public static final double shooterSpeakerPosition = 0.28;
     public static final double shooterClimbPosition = 2.25;
-    public static final double shooterDefaultPosition = 0.00;
-    public static final double kP = 5.4;
+    public static final double shooterDefaultPosition = 0.32;
+    public static final double sourceIntakePosition = 0;
+    public static final double kP = 5.9;
     public static final double kI = 0.0;
     public static final double kD = 0.01;
   }
@@ -50,18 +54,42 @@ public final class Constants {
     AMP,
     SPEAKER,
     CLIMB,
-    
+    SOURCE,
     DEFAULT
   }
   public static class VisionConstants {
-    public static final double INITIAL_LL_ANGLE = 18.62; //degrees
-    public static final double SPEAKER_HEIGHT = 5.63; //feet 
+    /*public static final double INITIAL_LL_ANGLE = 19.22; //degrees
+    public static final double SPEAKER_HEIGHT = 4.95; //feet 
     //public static final double LIMELIGHT_HEIGHT = 0; //height to limelight in feet MEASURE
     //TEST VARIABLES
     public static final double APRILTAG_HEIGHT = 4.221666667;
+
     public static final double LIME_HEIGHT = 1.583333333;
-    public static final double INITIAL_SHOOTER_ANGLE = 12.51; //degrees
+    public static final double INITIAL_SHOOTER_ANGLE = 7.582; //degrees
+    public static final double DEGREES_TO_ROTATIONS = 0.011111111;*/
+
+    public static final double INITIAL_LL_ANGLE = 16.82; //degrees    24.71
+    public static final double SPEAKER_HEIGHT = 5.8; //feet           6
+    //public static final double LIMELIGHT_HEIGHT = 0; //height to limelight in feet MEASURE
+    //TEST VARIABLES
+    public static final double APRILTAG_HEIGHT = 4.021666667;       //  4.041666666667
+
+    public static final double LIME_HEIGHT = 1.583333333;    //1483333333
+    public static final double INITIAL_SHOOTER_ANGLE = 10.5; //degrees   10
     public static final double DEGREES_TO_ROTATIONS = 0.011111111;
+
+
+    
+    
+    /*public static final double INITIAL_LL_ANGLE = 20; //degrees
+    public static final double SPEAKER_HEIGHT = 7.5; //feet 
+
+    //public static final double LIMELIGHT_HEIGHT = 0; //height to limelight in feet MEASURE
+    //TEST VARIABLES
+    public static final double APRILTAG_HEIGHT = 4.708666667;
+    public static final double LIME_HEIGHT = 1.583333333;
+    public static final double INITIAL_SHOOTER_ANGLE = 13; //degrees
+    public static final double DEGREES_TO_ROTATIONS = 0.011111111;*/
 
 
     //DISTANCE TO TARGET CONSTANTS
