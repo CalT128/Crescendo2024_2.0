@@ -41,7 +41,7 @@ public final class Constants {
 
     public static final double shooterAmpPosition = 0.23;
     //public static final double shooterAmpPosition = 0.67;
-    public static final double shooterSpeakerPosition = 0.28;
+    public static final double shooterSpeakerPosition = 0.43;
     public static final double shooterClimbPosition = 2.25;
     public static final double shooterDefaultPosition = 0.32;
     public static final double sourceIntakePosition = 0;

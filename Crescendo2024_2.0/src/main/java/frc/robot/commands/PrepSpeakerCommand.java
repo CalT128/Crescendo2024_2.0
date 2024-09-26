@@ -41,11 +41,12 @@ public class PrepSpeakerCommand extends Command {
         //m_intake.setIntakeSequenceFinished(false);//:):):)
       }
       if (m_vision.distanceToTarget(m_vision.getYOffset()) >= 14){
-        m_shooter.setShooterMotors(1);
+        m_shooter.setShooterMotors(0.43);
         
       }
       else{
-        m_shooter.setShooterMotors(0.9);
+        
+        m_shooter.setShooterMotors(0.43);
       }
     }
     else{
